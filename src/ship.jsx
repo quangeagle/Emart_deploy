@@ -237,7 +237,7 @@ const Shipping = () => {
 
   useEffect(() => {
     if (userId) {
-      axios.get(`http://localhost:3004/cart/${userId}`)
+      axios.get(`http://localhost:3005/cart/${userId}`)
         .then(response => {
           if (response.data && Array.isArray(response.data.cartItems)) {
             setCartItems(response.data.cartItems);
