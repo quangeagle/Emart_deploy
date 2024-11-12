@@ -154,7 +154,7 @@ import { faBars, faChevronDown, faSearch, faCartShopping, faHeart, faUser, faEar
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from './UserContext';
-
+import cc from '../src/Image/logo1.png'
 function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -247,7 +247,7 @@ function Header() {
             {/* Main Header */}
             <div className="flex items-center justify-center py-4">
                 <Link to='/'>
-                    <img src="emart.png" alt="Logo" className="w-32 h-10" />
+                    <img src={cc} alt="Logo" className="w-32 h-10" />
                 </Link>
                 
                 {/* Search Bar */}
