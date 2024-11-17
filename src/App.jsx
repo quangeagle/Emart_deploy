@@ -35,7 +35,7 @@ function App() {
     const token = localStorage.getItem('authToken'); // Lấy token từ local storage
   
     if (token) {
-      axios.get('http://localhost:3004/auth/verify', {
+      axios.get('http://localhost:3005/auth/verify', {
         headers: {
           'Authorization': `Bearer ${token}` // Gửi token trong header
         }

@@ -71,12 +71,15 @@ import './index.css'
 
 function LikeList() {
   const [favorites, setFavorites] = useState([]);
-  const { userId } = useUser(); // Get the user ID from context or props
 
+  const { user } = useUser(); // Lấy user từ UserContext
+  const userId = user.id;
+  
   useEffect(() => {
-    axios.get(`http://localhost:3004/likelist/${userId}`)
+    axios.get(`http://localhost:3005/likelist/${userId}`)
       .then(response => {
         setFavorites(response.data.favorites);
+        console.log("cc" , response.data)
       })
       .catch(error => {
         console.error('Error fetching favorite list:', error);
@@ -84,7 +87,7 @@ function LikeList() {
   }, [userId]);
 
   const removeFromLikeList = (productId) => {
-    axios.post('http://localhost:3004/likelist/remove', { userId, productId })
+    axios.post('http://localhost:3005/likelist/remove', { userId, productId })
       .then(response => {
         setFavorites(favorites.filter(fav => fav.productId._id !== productId));
       })
@@ -95,7 +98,6 @@ function LikeList() {
 
   return (
     <>
- 
       <div className="body_like">
         <div className="container">
           <div className="likelist">
@@ -107,35 +109,35 @@ function LikeList() {
                 <thead>
                   <tr>
                     <th className="col1">Hình ảnh</th>
-                    <th className="col2">Tên sản phẩm</th>
-                    <th className="col3">Kiểu</th>
-                    <th className="col4">Hàng hóa</th>
-                    <th className="col5">Đơn giá</th>
-                    <th className="col6">Thao tác</th>
+                    <th className="col2">Tên phiên bản</th>
+                    <th className="col3">Đơn giá</th>
+                    <th className="col4">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {favorites.map(favorite => (
-                    <tr key={favorite.productId._id}>
-                      <td className="col1">
-                        <img
-                          className="anhsanpham"
-                          src={favorite.productId.imageUrl} // Assuming the product object has an imageUrl field
-                          alt="ảnh sản phẩm"
-                        ></img>
-                      </td>
-                      <td className="col2">{favorite.productId.name}</td>
-                      <td className="col3">{favorite.productId.sku}</td>
-                      <td className="col4">{favorite.productId.quantity > 0 ? 'Còn hàng' : 'Hết hàng'}</td>
-                      <td className="col5">{favorite.productId.price}đ</td>
-                      <td className="col6">
-                        <button className="themvaogio">THÊM VÀO GIỎ</button>
-                        {/* <button className="xoa" onClick={() => removeFromLikeList(favorite.productId._id)}>
-                          <FontAwesomeIcon className="X" icon={faX} />
-                        </button> */}
-                      </td>
-                    </tr>
-                  ))}
+                  {favorites.map(favorite => {
+                    const version = favorite.versionId;  // Lấy thông tin versionId
+
+                    return (
+                      <tr key={favorite._id}>
+                        <td className="col1">
+                          <img
+                            className="anhsanpham"
+                            src={favorite.versionImage} // Hình ảnh phiên bản
+                            alt="ảnh sản phẩm"
+                          />
+                        </td>
+                        <td className="col2">{favorite.versionName}</td>
+                        <td className="col3">{favorite.versionPrice}đ</td>
+                        <td className="col4">
+                          <button className="themvaogio">THÊM VÀO GIỎ</button>
+                          <button className="xoa" onClick={() => removeFromLikeList(favorite.productId)}>
+                            <FontAwesomeIcon className="X" icon={faX} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
