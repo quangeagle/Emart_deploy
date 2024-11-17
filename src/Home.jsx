@@ -67,7 +67,7 @@ const Home = () => {
         </div>
        
 
-        <div className='mr-32 ml-32 mt-24'>
+        <div className='mr-32 ml-32 mt-24 pt-10'>
           {/* Image cards at the top */}
           <div className='h-52 mt-10 flex justify-between mb-10'>
             {["sale1.jpg", "sale2.jpg", "sale3.jpg"].map((imgSrc, idx) => (

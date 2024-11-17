@@ -154,7 +154,7 @@ import { faBars, faChevronDown, faSearch, faCartShopping, faHeart, faUser, faEar
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from './UserContext';
-import cc from '../src/Image/logo1.png'
+import cc from '../src/Image/emart.png'
 function Header() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -166,7 +166,7 @@ function Header() {
     };
 
     const handleLogout = () => {
-        axios.get('http://localhost:3004/auth/logout')
+        axios.get('http://localhost:3005/auth/logout')
             .then(() => {
                 updateUserInfo(null, ''); // Đặt lại thông tin người dùng
                 localStorage.removeItem('authToken'); 
@@ -178,14 +178,14 @@ function Header() {
     // Chỉ hiển thị menu người dùng khi đã đăng nhập
     useEffect(() => {
         const token = localStorage.getItem('authToken');
-        if (token && !user.username) {
+        if (token && !user.email) {
             // Kiểm tra nếu đã có token nhưng chưa có thông tin user trong context thì gọi hàm verify
-            axios.get('http://localhost:3004/auth/verify', {
+            axios.get('http://localhost:3005/auth/verify', {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then(response => {
                 if (response.data.login) {
-                    updateUserInfo(response.data.userId, response.data.username); // Cập nhật thông tin người dùng
+                    updateUserInfo(response.data.userId, response.data.email); // Cập nhật thông tin người dùng
                 }
             })
             .catch(error => console.error('Lỗi xác minh đăng nhập:', error));
@@ -218,10 +218,10 @@ function Header() {
                             Tiếng Việt
                         </button>
                     </div>
-                    {user.username ? (
+                    {user.email ? (
                         <div className="relative cursor-pointer" onClick={handleUserDropdownToggle}>
                             <div className="flex items-center">
-                                <p>Xin chào, {user.username}</p>
+                                <p>Xin chào, {user.email}</p>
                                 <FontAwesomeIcon icon={faChevronDown} className="ml-2" />
                             </div>
                             {isUserDropdownOpen && (

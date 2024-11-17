@@ -5,11 +5,11 @@ const UserContext = createContext();
 
 // Tạo Provider
 export function UserProvider({ children }) {
-  const [user, setUser] = useState({ id: null, username: null });
+  const [user, setUser] = useState({ id: null, email: null });
 
-  const updateUserInfo = (id, username) => {
+  const updateUserInfo = (id, email) => {
     // console.log('Cập nhật UserContext:', { id, username }); // Log trước khi cập nhật
-    setUser({ id, username }); // Cập nhật đối tượng user
+    setUser({ id, email }); // Cập nhật đối tượng user
   };
 
   return (

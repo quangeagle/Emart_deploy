@@ -38,7 +38,8 @@ function SupplierProducts() {
         {/* Phần thông tin nhà cung cấp */}
         <div className='w-1/3'>
           <img src={supplier.image} alt={supplier.name} className='w-full h-64 object-cover rounded' />
-          <h2 className='text-xl font-bold mt-4'>{supplier.name}</h2>
+          <h2 className='text-xl font-bold mt-4'>{supplier.username
+          }</h2>
           <p className='text-gray-500'>{supplier.description}</p>
         </div>
 
