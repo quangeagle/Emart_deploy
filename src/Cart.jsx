@@ -1,5 +1,3 @@
-
-
 // import React, { useState } from "react";
 // import Header from './header';
 // import { Link } from 'react-router-dom';
@@ -77,19 +75,15 @@
 //         </button>
 //          </Link>
 //       </div>
-     
+
 //     </div>
 //     <Footer/>
 //     </>
-  
+
 //   );
 // };
 
 // export default ShoppingCart;
-
-
-
-
 
 // import React, { useState, useEffect } from "react";
 // import Header from './header';
@@ -100,7 +94,7 @@
 
 // const ShoppingCart = () => {
 //   const [cartItems, setCartItems] = useState([]);
-//   const { userId } = useUser(); 
+//   const { userId } = useUser();
 
 //   useEffect(() => {
 //     if (userId) {
@@ -223,11 +217,6 @@
 // };
 
 // export default ShoppingCart;
-
-
-
-
-
 
 // import React, { useState, useEffect } from "react";
 // import Header from './header';
@@ -362,15 +351,13 @@
 
 // export default ShoppingCart;
 
-
 /////////////////////////////////////////////////////////////////////////////
 
-
 import React, { useState, useEffect } from "react";
-import Footer from './footer';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import { useUser } from './UserContext';
+import Footer from "./footer";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { useUser } from "./UserContext";
 
 const ShoppingCart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -384,104 +371,141 @@ const ShoppingCart = () => {
   }, [userId]);
 
   const fetchCartItems = () => {
-    axios.get(`http://localhost:3005/cart/${userId}`)
-      .then(response => {
+    axios
+      .get(`http://localhost:3005/cart/${userId}`)
+      .then((response) => {
         setCartItems(response.data.cartItems);
       })
-      .catch(error => {
-        console.error('Error fetching cart items:', error);
+      .catch((error) => {
+        console.error("Error fetching cart items:", error);
       });
   };
 
   const updateQuantity = (versionId, newQuantity, productId) => {
     if (newQuantity < 0) return;
-  
-    axios.post('http://localhost:3005/cart/update', { userId, productId, versionId, quantity: newQuantity })
-      .then(response => {
+
+    axios
+      .post("http://localhost:3005/cart/update", {
+        userId,
+        productId,
+        versionId,
+        quantity: newQuantity,
+      })
+      .then((response) => {
         fetchCartItems(); // Refetch the updated cart items
       })
-      .catch(error => {
-        console.error('Error updating quantity:', error);
+      .catch((error) => {
+        console.error("Error updating quantity:", error);
       });
   };
+
   const removeItem = (versionId, productId) => {
-    console.log('Requesting to remove item with versionId:', versionId);
-    axios.post('http://localhost:3005/cart/xoa', { userId, productId, versionId })
-      .then(response => {
+    console.log("Requesting to remove item with versionId:", versionId);
+    axios
+      .post("http://localhost:3005/cart/xoa", { userId, productId, versionId })
+      .then((response) => {
         setCartItems(response.data.cartItems); // Assuming the response contains updated cart items
       })
-      .catch(error => {
-        console.error('Error removing item:', error);
+      .catch((error) => {
+        console.error("Error removing item:", error);
       });
   };
-  
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.versionPrice || 0) * item.quantity, 0);
+    return cartItems.reduce(
+      (total, item) => total + (item.versionPrice || 0) * item.quantity,
+      0,
+    );
   };
 
   return (
     <>
-      <div className="mx-auto p-4 flex flex-col">
-        <div className="bg-yellow-400 py-2 px-4 rounded-t-md flex items-center">
-          <img src="cart-icon-1.png" className="h-10 w-10" alt="Cart Icon" />
-          <h2 className="text-xl font-bold">Giỏ Hàng</h2>
+      <div className="mx-auto max-w-7xl p-4">
+        <div className="flex items-center rounded-t-md bg-yellow-400 px-6 py-4">
+          <img src="cart-icon-1.png" className="h-12 w-12" alt="Cart Icon" />
+          <h2 className="ml-4 text-2xl font-semibold text-white">Giỏ Hàng</h2>
         </div>
 
-        <div className="bg-white p-4 shadow rounded-b-md">
-          <div className="flex items-center border-b">
+        <div className="mt-6 rounded-b-md bg-white p-6 shadow-lg">
+          <div className="mb-4 flex items-center border-b pb-4">
             <input type="checkbox" className="mr-2 h-4 w-4" />
-            <span className="text-red-500">Bạn đang chọn giao hàng từ Emart Phan Van Tri</span>
+            <span className="text-lg text-gray-700">
+              Bạn đang chọn giao hàng từ Emart Phan Van Tri
+            </span>
           </div>
 
           {cartItems.length > 0 ? (
-            cartItems.map(item => (
-              <div key={item._id} className="flex items-center justify-between py-4 border-b">
-                <img src={item.versionImage} alt="Product" className="w-20 h-20 object-cover" />
-                <div className="flex-grow px-4">
-                  <h3 className="font-bold">{item.versionName}</h3>
-                  <p className="text-gray-500">{item.versionPrice}₫</p>
+            cartItems.map((item) => (
+              <div
+                key={item._id}
+                className="flex items-center justify-between border-b py-4"
+              >
+                <img
+                  src={item.versionImage}
+                  alt="Product"
+                  className="h-24 w-24 rounded-md object-cover"
+                />
+                <div className="flex-grow px-6">
+                  <h3 className="text-lg font-medium">{item.versionName}</h3>
+                  <p className="text-sm text-gray-500">{item.versionPrice}₫</p>
                 </div>
                 <div className="flex items-center">
                   <button
-                    onClick={() => updateQuantity(item.versionId, item.quantity - 1, item.productId)}
-                    className="bg-gray-300 text-gray-700 px-2 rounded-l"
+                    onClick={() =>
+                      updateQuantity(
+                        item.versionId,
+                        item.quantity - 1,
+                        item.productId,
+                      )
+                    }
+                    className="mr-2 rounded-md bg-gray-200 px-[10px] py-1 text-gray-700"
                   >
                     -
                   </button>
-                  <span className="px-4">{item.quantity}</span>
+                  <span className="text-lg">{item.quantity}</span>
                   <button
-                    onClick={() => updateQuantity(item.versionId, item.quantity + 1, item.productId)}
-                    className="bg-gray-300 text-gray-700 px-2 rounded-r"
+                    onClick={() =>
+                      updateQuantity(
+                        item.versionId,
+                        item.quantity + 1,
+                        item.productId,
+                      )
+                    }
+                    className="ml-2 rounded-md bg-gray-200 px-2 py-1 text-gray-700"
                   >
                     +
                   </button>
                 </div>
-                <div className="font-bold text-lg">{item.quantity * item.versionPrice}₫</div>
+                <div className="ml-4 text-lg font-semibold text-red-500">
+                  {item.quantity * item.versionPrice}₫
+                </div>
                 <button
                   onClick={() => removeItem(item.versionId, item.productId)}
-                  className="text-red-500 ml-4"
+                  className="ml-4 text-red-500 hover:text-red-700"
                 >
                   Xóa
                 </button>
               </div>
             ))
           ) : (
-            <p>Giỏ hàng của bạn đang trống.</p>
+            <p className="py-4 text-center text-gray-500">
+              Giỏ hàng của bạn đang trống.
+            </p>
           )}
 
-          <div className="flex justify-between py-4">
+          <div className="mt-6 flex justify-between border-t pt-4">
             <div>
-              <h4 className="font-bold">Giá trị đơn hàng</h4>
-              <p className="text-lg">{calculateTotal()}₫</p>
+              <h4 className="text-lg font-semibold">Giá trị đơn hàng</h4>
+              <p className="text-lg text-gray-700">{calculateTotal()}₫</p>
             </div>
             <div className="text-right">
-              <h4 className="font-bold">Tổng tiền hàng</h4>
+              <h4 className="text-lg font-semibold">Tổng tiền hàng</h4>
               <p className="text-lg text-red-500">{calculateTotal()}₫</p>
             </div>
           </div>
-          <Link to='/ship'>
-            <button className="w-full bg-yellow-400 text-white py-2 rounded-md">
+
+          <Link to="/ship">
+            <button className="mt-6 w-full rounded-md bg-yellow-400 py-3 text-lg font-semibold text-white hover:bg-yellow-500">
               Thanh Toán
             </button>
           </Link>
