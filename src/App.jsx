@@ -24,6 +24,8 @@ import CreateHangHoaAndCate from './Admin/CreateHangHoaAndCate';
 import { useUser } from './UserContext';
 import Payment from './Payment';
 import SupplierProducts from './Admin/SupplierProducts';
+import AccountInfo from './AccountInfo';
+import ConnectWallet from './connect';
 function App() {
   const { userId, updateUserId } = useUser(); // Sử dụng UserContext
   const [role, setRole] = useState('');
@@ -76,7 +78,9 @@ function App() {
           <Route path="/kho" element={<Kho />} />
           <Route path="/Qlnhacc" element={<QlNhaCC />} />
           <Route path="/ship2" element={<Ship2 />} />
+          <Route path="/connect" element={<ConnectWallet />} />
           <Route path="/Payment" element={<Payment />} />
+          <Route path="/account-info" element={<AccountInfo />} />
           <Route path="/taonhacungcap" element={<CreateSupplierAndCategory />} />
           <Route path="/dsncc" element={<SupplierList />} />
           <Route path="/create-product" element={<CreateProduct />} />

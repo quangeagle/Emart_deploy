@@ -247,7 +247,7 @@ function DetailProduct() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useUser();
-  const userId = user?.id;
+  const userId = user.id;
 
   const [product, setProduct] = useState(null);
   const [selectedVersion, setSelectedVersion] = useState(null);

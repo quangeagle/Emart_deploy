@@ -214,7 +214,6 @@
 
 
 
-
     import React, { useState, useEffect } from 'react';
     import axios from 'axios';
     import { useUser } from './UserContext';
@@ -261,34 +260,34 @@
       };
     
       const handleSubmit = () => {
-  // Đảm bảo rằng orderItems được tạo đúng cách với versionId và quantity
-  const orderItems = cartItems
-    .filter(item => item.versionId && item.quantity && item.versionName && item.versionPrice && item.versionImage)  // Đảm bảo cả versionId và quantity tồn tại
-    .map(item => ({
-      versionId: item.versionId,  // Dùng versionId thay vì productId
-      quantity: item.quantity,
-    name: item.versionName,
-      
-price: item.versionPrice,
-
-imageUrl: item.versionImage,
-    }));
-
-  console.log('Sending orderItems:', orderItems);
-
-  // Gửi orderItems cùng với thông tin giao hàng
-  axios.post('http://localhost:3005/ship/themship', { 
-    ...shippingInfo, 
-    userId,
-    orderItems  // Gửi đúng orderItems với versionId
-  })
-    .then(response => {
-      console.log('Shipping info saved successfully');
-    })
-    .catch(error => {
-      console.error('Error saving shipping info:', error);
-    });
-};
+        // Đảm bảo rằng orderItems được tạo đúng cách với versionId và quantity
+        const orderItems = cartItems
+          .filter(item => item.versionId && item.quantity && item.versionName && item.versionPrice && item.versionImage)  // Đảm bảo cả versionId và quantity tồn tại
+          .map(item => ({
+            versionId: item.versionId,  // Dùng versionId thay vì productId
+            quantity: item.quantity,
+            name: item.versionName,
+            price: item.versionPrice,
+            imageUrl: item.versionImage,
+          }));
+    
+        console.log('Sending orderItems:', orderItems);
+    
+        // Gửi orderItems cùng với thông tin giao hàng
+        axios.post('http://localhost:3007/ship/themship', { 
+          ...shippingInfo, 
+          userId,
+          orderItems  // Gửi đúng orderItems với versionId
+        })
+          .then(response => {
+            console.log('Shipping info saved successfully');
+            // Có thể chuyển hướng tới trang thanh toán sau khi gửi đơn hàng
+          })
+          .catch(error => {
+            console.error('Error saving shipping info:', error);
+          });
+      };
+    
       const today = new Date();
       const maxDate = new Date();
       maxDate.setDate(today.getDate() + 7);
