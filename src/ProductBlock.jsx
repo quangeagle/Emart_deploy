@@ -1,4 +1,7 @@
+
+
 import React, { useState } from "react";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,14 +9,18 @@ import axios from "axios";
 import { useUser } from "./UserContext";
 
 const ProductBlock = ({ product }) => {
-  const { _id, name, price, newPrice, imageUrl } = product;
-  const [liked, setLiked] = useState(false); // Track like status
-  const { user } = useUser(); // Get user context
-  const navigate = useNavigate();
+
+  const { _id, name, price, newPrice, imageUrl, discount, versions } = product;
+
+  // Lấy giá của phiên bản đầu tiên nếu có
+  const versionPrice =
+    versions && versions.length > 0 ? versions[0].price : price;
 
   // Tính toán phần trăm khuyến mãi
   const discountPercentage =
-    price && newPrice ? Math.round(((price - newPrice) / price) * 100) : 0;
+    versionPrice && newPrice
+      ? Math.round(((versionPrice - newPrice) / versionPrice) * 100)
+      : 0;
 
   // Handle like/unlike action
   const addToLikeList = () => {
@@ -66,13 +73,18 @@ const ProductBlock = ({ product }) => {
           {/* Display Price */}
           {newPrice ? (
             <>
-              <p className="text-xs text-gray-500">
-                <span className="line-through text-sm">{price}₫</span>
+              <p className="text-xs">
+                <span className="line-through">{versionPrice}</span>
+
               </p>
               <p className="ml-2 text-lg font-semibold text-red-500">{newPrice}₫</p>
             </>
           ) : (
-            <p className="text-lg font-semibold text-gray-800">{price}₫</p>
+
+            <p className="text-xs">{versionPrice}</p>
+
+            
+
           )}
 
           {/* Favorite Icon */}
