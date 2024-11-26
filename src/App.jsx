@@ -26,6 +26,7 @@ import SupplierProducts from "./Admin/SupplierProducts";
 import AccountInfo from "./AccountInfo";
 import ConnectWallet from "./connect";
 import Confirm from "./Confirm";
+import SearchResults from "./SearchResults";
 
 function App() {
   const { userId, updateUserId } = useUser(); // Sử dụng UserContext
@@ -84,6 +85,7 @@ function App() {
             path="/taonhacungcap"
             element={<CreateSupplierAndCategory />}
           />
+          <Route path="/search" element={<SearchResults />} />
           <Route path="/confirm" element={<Confirm />} />
           <Route path="/dsncc" element={<SupplierList />} />
           <Route path="/create-product" element={<CreateProduct />} />

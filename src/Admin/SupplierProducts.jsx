@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Import Link for navigation
+import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { ToastContainer, toast } from "react-toastify"; // Import Toastify
-import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
+import "react-toastify/dist/ReactToastify.css";
 
 function SupplierProducts() {
   const { supplierId } = useParams(); // Lấy ID nhà cung cấp từ URL
@@ -67,7 +67,6 @@ function SupplierProducts() {
   // Thiết kế lại thẻ sản phẩm
   const ProductBlock = ({ product }) => {
     const { _id, name, price, imageUrl, versions } = product;
-
     const [liked, setLiked] = useState(false);
 
     // Lấy giá của phiên bản đầu tiên nếu có
@@ -75,13 +74,31 @@ function SupplierProducts() {
       versions && versions.length > 0 ? versions[0].price : price;
 
     // Xử lý hành động yêu thích/không yêu thích
-    const addToLikeList = () => {
-      setLiked(!liked);
-      toast.success(
-        liked
-          ? "🎉 Sản phẩm đã được gỡ khỏi danh sách yêu thích!"
-          : "🎉 Sản phẩm đã được thêm vào danh sách yêu thích!",
-      );
+    const addToLikeList = async () => {
+      try {
+        const userId = "currentUserId"; // Thay thế bằng ID người dùng thực tế
+
+        // Gửi yêu cầu thêm vào danh sách yêu thích
+        const response = await axios.post(
+          "http://localhost:3005/likelist/add",
+          {
+            userId,
+            productId: _id,
+            versionId: versions ? versions[0]._id : null,
+            versionName: versions ? versions[0].name : name,
+            versionPrice: versionPrice,
+            versionImage: imageUrl,
+          },
+        );
+
+        if (response.status === 201) {
+          setLiked(true); // Cập nhật trạng thái liked chỉ sau khi yêu cầu API thành công
+          toast.success("🎉 Sản phẩm đã được thêm vào danh sách yêu thích!");
+        }
+      } catch (error) {
+        toast.error("Có lỗi xảy ra khi thêm sản phẩm vào danh sách yêu thích.");
+        console.error(error);
+      }
     };
 
     return (
