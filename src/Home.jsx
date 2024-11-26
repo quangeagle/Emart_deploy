@@ -178,7 +178,7 @@ const Home = () => {
           </div>
           {/* First product slider */}
           <div className="h-auto bg-white">
-            <div className="mb-10 border-b-4 pb-4 pl-6 pt-5 text-xl font-bold">
+            <div className=" border-b-4 pb-4 pl-6 pt-5 text-xl font-bold">
               SẢN PHẨM BÁN CHẠY
             </div>
             <div className="h-auto">
