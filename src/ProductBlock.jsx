@@ -1,60 +1,46 @@
-// // ProductBlock.jsx
-// import React from 'react';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faHeart } from '@fortawesome/free-solid-svg-icons';
-// import { Link } from 'react-router-dom';
-
-// const ProductBlock = ({ product }) => {
-//   const { name, price, newPrice, imageUrl, discount } = product;
-
-//   // Tính toán phần trăm khuyến mãi
-//   const discountPercentage = price && newPrice ? Math.round(((price - newPrice) / price) * 100) : 0;
-
-//   return (
-//     <Link  to={`/Detail/${_id}`}>
-//       <div className='relative pl-7 flex-1 flex flex-col hover:shadow-2xl transition-shadow duration-300'>
-//         {/* Phần khuyến mãi */}
-//         {discountPercentage > 0 && (
-//         <div className='absolute top-2 right-2 w-20 h-8 flex items-center justify-center bg-red-500 text-white text-xs rounded-full'>
-//         {discountPercentage > 0 ? `${discountPercentage}%` : 'No Discount'}
-//       </div>
-
-//         )}
-//         <img src={imageUrl} alt={name} />
-//         <div className='text-xs'>{name}</div>
-//         <div className='flex flex-row mt-3'>
-//           {newPrice ? (
-//             <>
-//               <p className="text-xs">
-//                 <span className="line-through">{price}</span>
-//               </p>
-//               <p className='text-red-500 ml-2'>{newPrice}</p>
-//             </>
-//           ) : (
-//             <p className='text-xs'>{price}</p>
-//           )}
-//           <p className='text-slate-400 hover:text-red-500 block ml-2'>
-//             <FontAwesomeIcon icon={faHeart} className='text-current' />
-//           </p>
-//         </div>
-//       </div>
-//     </Link>
-//   );
-// };
-
-// export default ProductBlock;
-// ProductBlock.jsx
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useUser } from "./UserContext";
 
 const ProductBlock = ({ product }) => {
-  const { _id, name, price, newPrice, imageUrl, discount } = product;
+  const { _id, name, price, newPrice, imageUrl } = product;
+  const [liked, setLiked] = useState(false); // Track like status
+  const { user } = useUser(); // Get user context
+  const navigate = useNavigate();
 
   // Tính toán phần trăm khuyến mãi
   const discountPercentage =
     price && newPrice ? Math.round(((price - newPrice) / price) * 100) : 0;
+
+  // Handle like/unlike action
+  const addToLikeList = () => {
+    if (user && user.id) {
+      axios
+        .post("http://localhost:3005/likelist/add", {
+          userId: user.id,
+          productId: _id,
+          versionId: product.versions[0]._id, // assuming you're liking the first version
+          versionName: product.versions[0].name,
+          versionPrice: product.versions[0].price,
+          versionImage: product.versions[0].imageUrl,
+        })
+        .then((response) => {
+          if (response.data.success) {
+            setLiked(true); // Mark as liked
+            // Optionally navigate to the liked products page
+            // navigate("/likelist");
+          } else {
+            console.error("Error adding to likelist:", response.data.message);
+          }
+        })
+        .catch((error) => console.error("Error adding to likelist:", error));
+    } else {
+      navigate("/login"); // Redirect to login if not logged in
+    }
+  };
 
   return (
     <Link to={`/product/${_id}`}>
@@ -76,19 +62,31 @@ const ProductBlock = ({ product }) => {
         <h3 className="mt-4 text-center text-sm font-medium text-gray-800 group-hover:text-gray-900">
           {name}
         </h3>
-        <div className="mt-3 flex flex-row">
+        <div className="mt-3 flex flex-row items-center">
+          {/* Display Price */}
           {newPrice ? (
             <>
-              <p className="text-xs">
-                <span className="line-through">{price}</span>
+              <p className="text-xs text-gray-500">
+                <span className="line-through text-sm">{price}₫</span>
               </p>
-              <p className="ml-2 text-red-500">{newPrice}</p>
+              <p className="ml-2 text-lg font-semibold text-red-500">{newPrice}₫</p>
             </>
           ) : (
-            <p className="text-xs">{price}</p>
+            <p className="text-lg font-semibold text-gray-800">{price}₫</p>
           )}
-          <p className="ml-2 block text-slate-400 hover:text-[#ffd040]">
-            <FontAwesomeIcon icon={faHeart} className="text-current" />
+
+          {/* Favorite Icon */}
+          <p
+            className="ml-2 block text-slate-400 hover:text-[#ffd040]"
+            onClick={(e) => {
+              e.preventDefault(); // Prevent link navigation
+              addToLikeList(); // Add product to like list
+            }}
+          >
+            <FontAwesomeIcon
+              icon={faHeart}
+              className={`text-current ${liked ? "text-red-500" : "text-gray-400"}`}
+            />
           </p>
         </div>
       </div>
