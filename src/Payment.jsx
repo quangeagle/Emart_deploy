@@ -104,26 +104,32 @@ function Payment() {
       returnUrl: VITE_REDIRECT_URL,
     });
     try {
-      await axios.post(
-        `https://api.pointer.io.vn/api/payment/connect-wallet/payment`,
-        {
-          signature: userSignature,
-          amount: orderData.totalValue,
-          currency: "VND",
-          message: `Thanh toán cho đơn hàng #${orderData.orderId}`,
-          userID: userId,
-          orderID: orderData.orderId,
-          returnUrl: VITE_REDIRECT_URL,
-        },
-        {
-          headers: {
-            Authorization: `Bearer sk_pointerf97ad5e90eb156b9a2b5d18e44bb37f8c89c2f0db611038a751c3bc7e0ec63c6`,
-          },
-          withCredentials: false,
-        },
-      );
-      alert("Thanh toán nhanh thành công!");
-      navigate("/");
+
+      await axios.post(`https://api.pointer.io.vn/api/payment/connect-wallet/payment`,{
+        signature: userSignature,
+        amount: orderData.totalValue,
+        currency: "VND",
+        message: `Payment for order #${orderData.orderId}`,
+        userID: userId,
+        orderID: orderData.orderId,
+        returnUrl: "http://localhost:5173",
+      } ,{
+        headers: { Authorization: `Bearer sk_pointerf97ad5e90eb156b9a2b5d18e44bb37f8c89c2f0db611038a751c3bc7e0ec63c6` },
+        withCredentials :false
+      }
+      
+    );({
+        signature: userSignature,
+        amount: orderData.totalValue,
+        currency: "VND",
+        message: `Payment for order #${orderData.orderId}`,
+        userID: userId,
+        orderID: orderData.orderId,
+        returnUrl: VITE_REDIRECT_URL,
+      });
+      alert('Thanh toán nhanh thành công!');
+      navigate('/');
+
     } catch (error) {
       console.error("Lỗi trong quá trình thanh toán nhanh:", error);
     }
