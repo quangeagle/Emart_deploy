@@ -31,14 +31,8 @@ const ProductBlock = ({ product }) => {
         })
         .then((response) => {
           if (response.data.success) {
-            toast.success(
-              "🎉 Sản phẩm đã được thêm vào danh sách yêu thích thành công!",
-            );
             setLiked(true); // Đánh dấu sản phẩm đã được yêu thích
           } else {
-            toast.error(
-              response.data.message || "Lỗi thêm vào danh sách yêu thích",
-            );
             console.error(
               "Lỗi khi thêm vào danh sách yêu thích:",
               response.data.message,

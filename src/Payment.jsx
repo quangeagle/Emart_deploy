@@ -104,21 +104,25 @@ function Payment() {
       returnUrl: VITE_REDIRECT_URL,
     });
     try {
-
-      await axios.post(`https://api.pointer.io.vn/api/payment/connect-wallet/payment`,{
-        signature: userSignature,
-        amount: orderData.totalValue,
-        currency: "VND",
-        message: `Payment for order #${orderData.orderId}`,
-        userID: userId,
-        orderID: orderData.orderId,
-        returnUrl: "http://localhost:5173",
-      } ,{
-        headers: { Authorization: `Bearer sk_pointerf97ad5e90eb156b9a2b5d18e44bb37f8c89c2f0db611038a751c3bc7e0ec63c6` },
-        withCredentials :false
-      }
-      
-    );({
+      await axios.post(
+        `https://api.pointer.io.vn/api/payment/connect-wallet/payment`,
+        {
+          signature: userSignature,
+          amount: orderData.totalValue,
+          currency: "VND",
+          message: `Payment for order #${orderData.orderId}`,
+          userID: userId,
+          orderID: orderData.orderId,
+          returnUrl: "http://localhost:5173",
+        },
+        {
+          headers: {
+            Authorization: `Bearer sk_pointerf97ad5e90eb156b9a2b5d18e44bb37f8c89c2f0db611038a751c3bc7e0ec63c6`,
+          },
+          withCredentials: false,
+        },
+      );
+      ({
         signature: userSignature,
         amount: orderData.totalValue,
         currency: "VND",
@@ -127,9 +131,8 @@ function Payment() {
         orderID: orderData.orderId,
         returnUrl: VITE_REDIRECT_URL,
       });
-      alert('Thanh toán nhanh thành công!');
-      navigate('/');
-
+      alert("Thanh toán nhanh thành công!");
+      navigate("/");
     } catch (error) {
       console.error("Lỗi trong quá trình thanh toán nhanh:", error);
     }
@@ -181,40 +184,58 @@ function Payment() {
   };
 
   return (
-    <div>
-      <h2>Chọn phương thức thanh toán</h2>
-      <div>
-        <input
-          type="radio"
-          id="quick-payment"
-          name="payment"
-          value="quick-payment"
-          onChange={handlePaymentChange}
-        />
-        <label htmlFor="quick-payment">Thanh toán nhanh</label>
+    <div className="flex min-h-screen flex-col items-center bg-gray-50 px-4 py-8">
+      <h2 className="mb-6 text-xl font-semibold text-gray-700">
+        Chọn phương thức thanh toán
+      </h2>
+      <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-md">
+        <div className="mb-4">
+          <label className="mb-2 flex items-center">
+            <input
+              type="radio"
+              id="quick-payment"
+              name="payment"
+              value="quick-payment"
+              onChange={handlePaymentChange}
+              className="form-radio h-4 w-4 text-yellow-400 transition duration-150 ease-in-out"
+            />
+            <span className="ml-3 text-sm text-gray-700">Thanh toán nhanh</span>
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              id="qr-payment"
+              name="payment"
+              value="qr-payment"
+              onChange={handlePaymentChange}
+              className="form-radio h-4 w-4 text-yellow-400 transition duration-150 ease-in-out"
+            />
+            <span className="ml-3 text-sm text-gray-700">Quét mã QR</span>
+          </label>
+        </div>
+        <p className="mb-6 text-sm text-gray-600">
+          Tổng giá:{" "}
+          <span className="font-semibold text-gray-800">
+            {shippingData?.orderItems
+              ?.reduce((total, item) => total + item.price * item.quantity, 0)
+              .toLocaleString()}{" "}
+            VND
+          </span>
+        </p>
+        <button
+          onClick={handlePaymentSubmit}
+          disabled={!selectedPaymentMethod}
+          className={`w-full rounded-md px-4 py-2 text-sm font-medium text-white transition-all duration-200 ${
+            selectedPaymentMethod
+              ? "bg-yellow-400 hover:bg-yellow-500 focus:ring-2 focus:ring-yellow-300 focus:ring-offset-1"
+              : "cursor-not-allowed bg-gray-300"
+          }`}
+        >
+          {selectedPaymentMethod === "quick-payment"
+            ? "Thanh toán nhanh"
+            : "Quét mã QR"}
+        </button>
       </div>
-      <div>
-        <input
-          type="radio"
-          id="qr-payment"
-          name="payment"
-          value="qr-payment"
-          onChange={handlePaymentChange}
-        />
-        <label htmlFor="qr-payment">Quét mã QR</label>
-      </div>
-      <p>
-        Tổng giá:{" "}
-        {shippingData?.orderItems
-          ?.reduce((total, item) => total + item.price * item.quantity, 0)
-          .toLocaleString()}{" "}
-        VND
-      </p>
-      <button onClick={handlePaymentSubmit} disabled={!selectedPaymentMethod}>
-        {selectedPaymentMethod === "quick-payment"
-          ? "Thanh toán nhanh"
-          : "Quét mã QR"}
-      </button>
     </div>
   );
 }
