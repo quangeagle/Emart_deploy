@@ -404,7 +404,9 @@ const ShoppingCart = () => {
     axios
       .post("http://localhost:3005/cart/xoa", { userId, productId, versionId })
       .then((response) => {
+        console.log("Item removed successfully:", response.data);
         setCartItems(response.data.cartItems); // Assuming the response contains updated cart items
+        window.location.reload(); // Reload the page after updating cart items
       })
       .catch((error) => {
         console.error("Error removing item:", error);
