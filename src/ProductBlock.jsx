@@ -9,10 +9,9 @@ import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
 
 const ProductBlock = ({ product }) => {
   const { _id, name, price, imageUrl, versions } = product;
-
-  const [liked, setLiked] = useState(false); // Thêm state cho liked
+  const [liked, setLiked] = useState(false); // State cho việc yêu thích sản phẩm
   const { user } = useUser(); // Lấy thông tin người dùng từ context
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Điều hướng đến các trang khác
 
   // Lấy giá của phiên bản đầu tiên nếu có
   const versionPrice = versions && versions.length > 0 ? versions[0].price : price;
@@ -34,7 +33,7 @@ const ProductBlock = ({ product }) => {
             toast.success(
               "🎉 Sản phẩm đã được thêm vào danh sách yêu thích thành công!",
             );
-            setLiked(true); // Đánh dấu đã thích
+            setLiked(true);// Đánh dấu sản phẩm đã được yêu thích
           } else {
             toast.error(
               response.data.message || "Lỗi thêm vào danh sách yêu thích",
@@ -62,7 +61,7 @@ const ProductBlock = ({ product }) => {
         <h3 className="mt-4 text-center text-[12px] font-inherit text-gray-800 group-hover:text-gray-900">
           {name}
         </h3>
-        <div className="mt-3 flex flex-row items-center justify-between ">
+        <div className="mt-3 flex flex-row items-center justify-between">
           {/* Hiển thị Giá */}
           <p className="text-[15px] font-bold">{versionPrice} ₫</p>
 
@@ -78,6 +77,8 @@ const ProductBlock = ({ product }) => {
           </div>
         </div>
       </div>
+
+      {/* Toast Container sẽ hiển thị thông báo */}
       <ToastContainer position="top-right" autoClose={2000} />
     </Link>
   );
