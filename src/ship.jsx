@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useUser } from "./UserContext";
 import { Link } from "react-router-dom";
 
 const Shipping = () => {
-  const { user } = useUser(); // Lấy user từ UserContext
+  const { user } = useUser();
   const userId = user.id;
   const [cartItems, setCartItems] = useState([]);
   const [shippingInfo, setShippingInfo] = useState({
@@ -16,6 +16,15 @@ const Shipping = () => {
     selectedTime: "",
     paymentMethod: "COD",
     note: "",
+  });
+  const [errors, setErrors] = useState({
+    address: "",
+    name: "",
+    phone: "",
+    email: "",
+    selectedDate: "",
+    selectedTime: "",
+    paymentMethod: "",
   });
 
   useEffect(() => {
@@ -45,9 +54,96 @@ const Shipping = () => {
       ...shippingInfo,
       [name]: value,
     });
+    setErrors({
+      ...errors,
+      [name]: "", // Clear the error for that field when the user changes the input
+    });
+  };
+
+  const validate = () => {
+    const {
+      address,
+      name,
+      phone,
+      email,
+      selectedDate,
+      selectedTime,
+      paymentMethod,
+    } = shippingInfo;
+
+    let valid = true;
+    let newErrors = {
+      address: "",
+      name: "",
+      phone: "",
+      email: "",
+      selectedDate: "",
+      selectedTime: "",
+      paymentMethod: "",
+    };
+
+    // Validate required fields
+    if (!address) {
+      newErrors.address = "Vui lòng nhập địa chỉ.";
+      valid = false;
+    }
+    if (!name) {
+      newErrors.name = "Vui lòng nhập tên.";
+      valid = false;
+    }
+    if (!phone) {
+      newErrors.phone = "Vui lòng nhập số điện thoại.";
+      valid = false;
+    }
+    if (!email) {
+      newErrors.email = "Vui lòng nhập email.";
+      valid = false;
+    }
+    if (!selectedDate) {
+      newErrors.selectedDate = "Vui lòng chọn ngày giao hàng.";
+      valid = false;
+    }
+    if (!selectedTime) {
+      newErrors.selectedTime = "Vui lòng chọn giờ giao hàng.";
+      valid = false;
+    }
+    if (!paymentMethod) {
+      newErrors.paymentMethod = "Vui lòng chọn phương thức thanh toán.";
+      valid = false;
+    }
+
+    // Validate phone number (must be 10 digits and start with 0)
+    const phoneRegex = /^0\d{9}$/;
+    if (phone && !phoneRegex.test(phone)) {
+      newErrors.phone = "Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0.";
+      valid = false;
+    }
+
+    // Validate delivery date (must be today or future)
+    const today = new Date();
+    const selectedDateObj = new Date(selectedDate);
+    if (selectedDateObj < today) {
+      newErrors.selectedDate = "Ngày giao hàng chỉ được chọn trong hôm nay hoặc tương lai.";
+      valid = false;
+    }
+
+    // Validate delivery time (must be between 9:00 and 18:00)
+    const selectedTimeObj = new Date(`1970-01-01T${selectedTime}:00Z`);
+    const startTime = new Date("1970-01-01T09:00:00Z");
+    const endTime = new Date("1970-01-01T18:00:00Z");
+
+    if (selectedTimeObj < startTime || selectedTimeObj > endTime) {
+      newErrors.selectedTime = "Giờ giao hàng phải trong khoảng từ 9:00 sáng đến 18:00 tối.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
   };
 
   const handleSubmit = () => {
+    if (!validate()) return;
+
     const orderItems = cartItems
       .filter(
         (item) =>
@@ -150,6 +246,9 @@ const Shipping = () => {
               onChange={handleShippingInfoChange}
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
+            {errors.address && (
+              <div className="text-red-600 text-sm">{errors.address}</div>
+            )}
           </div>
 
           {/* Tên */}
@@ -162,6 +261,9 @@ const Shipping = () => {
               onChange={handleShippingInfoChange}
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
+            {errors.name && (
+              <div className="text-red-600 text-sm">{errors.name}</div>
+            )}
           </div>
 
           {/* Số điện thoại */}
@@ -174,6 +276,9 @@ const Shipping = () => {
               onChange={handleShippingInfoChange}
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
+            {errors.phone && (
+              <div className="text-red-600 text-sm">{errors.phone}</div>
+            )}
           </div>
 
           {/* Email */}
@@ -186,6 +291,9 @@ const Shipping = () => {
               onChange={handleShippingInfoChange}
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
+            {errors.email && (
+              <div className="text-red-600 text-sm">{errors.email}</div>
+            )}
           </div>
 
           {/* Ngày giao hàng */}
@@ -195,11 +303,14 @@ const Shipping = () => {
               type="date"
               name="selectedDate"
               value={shippingInfo.selectedDate}
+              onChange={handleShippingInfoChange}
               min={formatDate(today)}
               max={formatDate(maxDate)}
-              onChange={handleShippingInfoChange}
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
+            {errors.selectedDate && (
+              <div className="text-red-600 text-sm">{errors.selectedDate}</div>
+            )}
           </div>
 
           {/* Giờ giao hàng */}
@@ -212,13 +323,14 @@ const Shipping = () => {
               onChange={handleShippingInfoChange}
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
+            {errors.selectedTime && (
+              <div className="text-red-600 text-sm">{errors.selectedTime}</div>
+            )}
           </div>
 
           {/* Phương thức thanh toán */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium">
-              Phương thức thanh toán:
-            </label>
+            <label className="text-sm font-medium">Phương thức thanh toán:</label>
             <select
               name="paymentMethod"
               value={shippingInfo.paymentMethod}
@@ -228,6 +340,9 @@ const Shipping = () => {
               <option value="COD">Thanh toán khi nhận hàng (COD)</option>
               <option value="CreditCard">Thẻ tín dụng</option>
             </select>
+            {errors.paymentMethod && (
+              <div className="text-red-600 text-sm">{errors.paymentMethod}</div>
+            )}
           </div>
 
           {/* Ghi chú */}

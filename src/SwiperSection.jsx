@@ -1,10 +1,10 @@
-// SwiperSection.jsx
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
+import { Navigation, Pagination, Mousewheel, Keyboard, Autoplay } from "swiper/modules"; // Import Autoplay module
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "swiper/css/autoplay"; // Import autoplay styles if needed
 
 const SwiperSection = ({ images }) => {
   return (
@@ -15,7 +15,11 @@ const SwiperSection = ({ images }) => {
         pagination={{ clickable: true }}
         mousewheel={true}
         keyboard={true}
-        modules={[Navigation, Pagination, Mousewheel, Keyboard]}
+        autoplay={{
+          delay: 3000, // Time in milliseconds between slides (3000ms = 3 seconds)
+          disableOnInteraction: false, // Allows autoplay to continue after user interaction
+        }}
+        modules={[Navigation, Pagination, Mousewheel, Keyboard, Autoplay]} // Include Autoplay module
         className="mySwiper h-98 w-full group"
       >
         {images.map((img, index) => (
