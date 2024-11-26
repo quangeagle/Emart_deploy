@@ -14,7 +14,8 @@ const ProductBlock = ({ product }) => {
   const navigate = useNavigate(); // Điều hướng đến các trang khác
 
   // Lấy giá của phiên bản đầu tiên nếu có
-  const versionPrice = versions && versions.length > 0 ? versions[0].price : price;
+  const versionPrice =
+    versions && versions.length > 0 ? versions[0].price : price;
 
   // Xử lý hành động yêu thích/không yêu thích
   const addToLikeList = () => {
@@ -33,15 +34,20 @@ const ProductBlock = ({ product }) => {
             toast.success(
               "🎉 Sản phẩm đã được thêm vào danh sách yêu thích thành công!",
             );
-            setLiked(true);// Đánh dấu sản phẩm đã được yêu thích
+            setLiked(true); // Đánh dấu sản phẩm đã được yêu thích
           } else {
             toast.error(
               response.data.message || "Lỗi thêm vào danh sách yêu thích",
             );
-            console.error("Lỗi khi thêm vào danh sách yêu thích:", response.data.message);
+            console.error(
+              "Lỗi khi thêm vào danh sách yêu thích:",
+              response.data.message,
+            );
           }
         })
-        .catch((error) => console.error("Lỗi khi thêm vào danh sách yêu thích:", error));
+        .catch((error) =>
+          console.error("Lỗi khi thêm vào danh sách yêu thích:", error),
+        );
     } else {
       navigate("/login"); // Điều hướng đến trang đăng nhập nếu chưa đăng nhập
     }
@@ -49,7 +55,7 @@ const ProductBlock = ({ product }) => {
 
   return (
     <Link to={`/product/${_id}`}>
-      <div className="relative m-6 p-7 flex flex-1 flex-col transition-shadow duration-300 hover:shadow-2xl">
+      <div className="relative m-6 flex flex-1 flex-col p-7 transition-shadow duration-300 hover:shadow-2xl">
         <div className="flex h-48 w-full items-center justify-center overflow-hidden rounded-lg bg-gray-100">
           <img
             src={imageUrl}
@@ -58,16 +64,18 @@ const ProductBlock = ({ product }) => {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
-        <h3 className="mt-4 text-center text-[12px] font-inherit text-gray-800 group-hover:text-gray-900">
+        <h3 className="font-inherit mt-4 text-center text-[18px] font-medium text-gray-800 group-hover:text-gray-900">
           {name}
         </h3>
         <div className="mt-3 flex flex-row items-center justify-between">
           {/* Hiển thị Giá */}
-          <p className="text-[15px] font-bold">{versionPrice} ₫</p>
-
+          Giá:
+          <p className="flex text-left text-[18px] font-medium text-red-400">
+            {versionPrice} ₫
+          </p>
           {/* Biểu tượng yêu thích với khung */}
           <div
-            className={`ml-5 h-8 flex items-center justify-center rounded px-2 py-1 ${liked ? "bg-red-500 text-white" : "bg-gray-200 text-black"} hover:bg-[#ffd040] hover:text-white`}
+            className={`ml-5 flex h-8 items-center justify-center rounded px-2 py-1 ${liked ? "bg-red-500 text-white" : "bg-gray-200 text-black"} hover:bg-[#ffd040] hover:text-white`}
             onClick={(e) => {
               e.preventDefault(); // Ngừng điều hướng liên kết
               addToLikeList(); // Thêm sản phẩm vào danh sách yêu thích
