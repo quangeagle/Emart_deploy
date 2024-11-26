@@ -101,7 +101,10 @@ function SupplierProducts() {
           {name}
         </h3>
         <div className="mt-3 flex flex-row items-center justify-between">
-          <p className="text-[15px] font-bold">{versionPrice} ₫</p>
+          Giá:{" "}
+          <p className="text-[18px] font-medium text-red-400">
+            {versionPrice} ₫
+          </p>
           <div
             className={`ml-5 flex h-8 items-center justify-center rounded px-2 py-1 ${liked ? "bg-red-500 text-white" : "bg-gray-200 text-black"} hover:bg-[#ffd040] hover:text-white`}
             onClick={(e) => {
