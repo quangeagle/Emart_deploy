@@ -31,11 +31,8 @@
     "react-dom": "^18.3.1",
     "react-i18next": "^15.1.1",
     "react-router-dom": "^6.24.1",
-
-    "react-toastify": "^10.0.6",
-
     "react-time-picker": "^7.0.0",
-
+    "react-toastify": "^10.0.6",
     "sso-pointer": "^1.0.7",
     "swiper": "^11.1.4"
   },

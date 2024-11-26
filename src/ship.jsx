@@ -167,23 +167,31 @@ const Shipping = () => {
       imageUrl: item.versionImage,
     }));
 
-    if (shippingInfo.paymentMethod === "COD") {
+    if (shippingInfo.paymentMethod === "COD" || shippingInfo.paymentMethod === "CreditCard") {
       try {
-        await axios.post("http://localhost:3005/ship/themship", {
+        // Gửi request lưu đơn hàng
+        await axios.post("http://localhost:3007/ship/themship", {
           ...shippingInfo,
           userId,
           orderItems,
         });
         toast.success("Đã lưu đơn hàng thành công!");
-        navigate("/confirm");
+    
+        // Chuyển hướng tùy theo phương thức thanh toán
+        if (shippingInfo.paymentMethod === "COD") {
+          navigate("/confirm");  // Chuyển đến trang xác nhận khi thanh toán COD
+        } else {
+          navigate("/Payment");  // Chuyển đến trang thanh toán khi chọn CreditCard
+        }
       } catch (error) {
         console.error("Error saving shipping info:", error);
         toast.error("Không thể lưu đơn hàng. Vui lòng thử lại.");
       }
     } else {
-      navigate("/Payment");
+      toast.error("Phương thức thanh toán không hợp lệ.");
+      navigate("/");  // Quay lại trang chính nếu phương thức thanh toán không hợp lệ
     }
-  };
+  }    
 
   const today = new Date();
   const maxDate = new Date();
@@ -370,7 +378,7 @@ const Shipping = () => {
                 className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
               >
                 <option value="COD">Thanh toán khi nhận hàng (COD)</option>
-                <option value="creditCard">Thanh toán trực tuyến</option>
+                <option value="CreditCard">Thanh toán trực tuyến</option>
               </select>
               {errors.paymentMethod && (
                 <div className="text-sm text-red-600">
