@@ -132,7 +132,7 @@ function AccountInfo() {
     
           const data = await response.json();
           console.log('Order refunded successfully:', data);
-    
+          alert('Hoàn tiền thành công');
           alert('Hoàn tiền thành công');
           location.reload();
         } catch (error) {
