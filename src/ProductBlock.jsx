@@ -1,7 +1,4 @@
-
-
 import React, { useState } from "react";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,12 +6,14 @@ import axios from "axios";
 import { useUser } from "./UserContext";
 
 const ProductBlock = ({ product }) => {
+  const { _id, name, price, newPrice, imageUrl, versions } = product;
 
-  const { _id, name, price, newPrice, imageUrl, discount, versions } = product;
+  const [liked, setLiked] = useState(false); // Thêm state cho liked
+  const { user } = useUser(); // Lấy thông tin người dùng từ context
+  const navigate = useNavigate();
 
   // Lấy giá của phiên bản đầu tiên nếu có
-  const versionPrice =
-    versions && versions.length > 0 ? versions[0].price : price;
+  const versionPrice = versions && versions.length > 0 ? versions[0].price : price;
 
   // Tính toán phần trăm khuyến mãi
   const discountPercentage =
@@ -22,30 +21,30 @@ const ProductBlock = ({ product }) => {
       ? Math.round(((versionPrice - newPrice) / versionPrice) * 100)
       : 0;
 
-  // Handle like/unlike action
+  // Xử lý hành động yêu thích/không yêu thích
   const addToLikeList = () => {
     if (user && user.id) {
       axios
         .post("http://localhost:3005/likelist/add", {
           userId: user.id,
           productId: _id,
-          versionId: product.versions[0]._id, // assuming you're liking the first version
-          versionName: product.versions[0].name,
-          versionPrice: product.versions[0].price,
-          versionImage: product.versions[0].imageUrl,
+          versionId: versions[0]._id, // Giả sử bạn thích phiên bản đầu tiên
+          versionName: versions[0].name,
+          versionPrice: versions[0].price,
+          versionImage: versions[0].imageUrl,
         })
         .then((response) => {
           if (response.data.success) {
-            setLiked(true); // Mark as liked
-            // Optionally navigate to the liked products page
+            setLiked(true); // Đánh dấu đã thích
+            // Có thể điều hướng đến trang sản phẩm yêu thích
             // navigate("/likelist");
           } else {
-            console.error("Error adding to likelist:", response.data.message);
+            console.error("Lỗi khi thêm vào danh sách yêu thích:", response.data.message);
           }
         })
-        .catch((error) => console.error("Error adding to likelist:", error));
+        .catch((error) => console.error("Lỗi khi thêm vào danh sách yêu thích:", error));
     } else {
-      navigate("/login"); // Redirect to login if not logged in
+      navigate("/login"); // Điều hướng đến trang đăng nhập nếu chưa đăng nhập
     }
   };
 
@@ -55,7 +54,7 @@ const ProductBlock = ({ product }) => {
         {/* Phần khuyến mãi */}
         {discountPercentage > 0 && (
           <div className="absolute right-2 top-2 flex h-8 w-20 items-center justify-center rounded-full bg-red-500 text-xs text-white">
-            {discountPercentage}% Discount
+            {discountPercentage}% Giảm giá
           </div>
         )}
         <div className="flex h-48 w-full items-center justify-center overflow-hidden rounded-lg bg-gray-100">
@@ -70,29 +69,24 @@ const ProductBlock = ({ product }) => {
           {name}
         </h3>
         <div className="mt-3 flex flex-row items-center">
-          {/* Display Price */}
+          {/* Hiển thị Giá */}
           {newPrice ? (
             <>
               <p className="text-xs">
-                <span className="line-through">{versionPrice}</span>
-
+                <span className="line-through">{versionPrice}₫</span>
               </p>
               <p className="ml-2 text-lg font-semibold text-red-500">{newPrice}₫</p>
             </>
           ) : (
-
-            <p className="text-xs">{versionPrice}</p>
-
-            
-
+            <p className="text-xs">{versionPrice}₫</p>
           )}
 
-          {/* Favorite Icon */}
+          {/* Biểu tượng yêu thích */}
           <p
             className="ml-2 block text-slate-400 hover:text-[#ffd040]"
             onClick={(e) => {
-              e.preventDefault(); // Prevent link navigation
-              addToLikeList(); // Add product to like list
+              e.preventDefault(); // Ngừng điều hướng liên kết
+              addToLikeList(); // Thêm sản phẩm vào danh sách yêu thích
             }}
           >
             <FontAwesomeIcon
