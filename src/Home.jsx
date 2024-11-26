@@ -134,17 +134,17 @@ const Home = () => {
 
         <div className="ml-32 mr-32 mt-5">
           {/* Image cards at the top */}
-          <div className="mb-10 mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 justify-center">
+          <div className="mb-10 mr-[-40px] mt-10 grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 md:grid-cols-3">
             {["sale1.jpg", "sale2.jpg", "sale3.jpg"].map((imgSrc, idx) => (
               <div
                 key={idx}
-                className="relative h-52 w-full sm:w-96 md:w-96 lg:w-96 overflow-hidden rounded-lg border border-gray-300"
+                className="relative h-52 w-full overflow-hidden rounded-lg border border-gray-300 sm:w-96 md:w-96 lg:w-96"
               >
                 <img
                   src={imgSrc}
-                  className="transform transition-transform hover:scale-110 hover:opacity-50 w-full h-full object-cover"
+                  className="mr-10 h-full w-full transform object-cover transition-transform hover:scale-110 hover:opacity-50"
                 />
-                <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 p-2 text-center text-white">
+                <div className="absolute bottom-0 left-0 mr-10 w-full bg-black bg-opacity-50 p-2 text-center text-white">
                   {idx === 0
                     ? "NO BRAND"
                     : idx === 1

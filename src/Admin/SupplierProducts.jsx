@@ -88,11 +88,6 @@ function SupplierProducts() {
                   Thêm vào giỏ
                 </button>
               </div>
-
-              {/* Hiệu ứng overlay
-              <div className="absolute inset-0 z-10 hidden items-center justify-center bg-black/40 text-white transition-all group-hover:flex">
-                <p className="text-lg">Chi tiết sản phẩm</p>
-              </div> */}
             </div>
           ))}
         </div>
