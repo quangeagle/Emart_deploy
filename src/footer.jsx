@@ -108,7 +108,7 @@ function Footer() {
                   className="text-xs text-white hover:text-yellow-400"
                   href="#"
                 >
-                  Chính sách giao nhận - vận chuyển
+                  Chính sách giao nhận - vận chuyểnn
                 </a>
               </li>
               <li>
