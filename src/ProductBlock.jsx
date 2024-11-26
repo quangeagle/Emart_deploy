@@ -1,60 +1,20 @@
-// // ProductBlock.jsx
-// import React from 'react';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { faHeart } from '@fortawesome/free-solid-svg-icons';
-// import { Link } from 'react-router-dom';
-
-// const ProductBlock = ({ product }) => {
-//   const { name, price, newPrice, imageUrl, discount } = product;
-
-//   // Tính toán phần trăm khuyến mãi
-//   const discountPercentage = price && newPrice ? Math.round(((price - newPrice) / price) * 100) : 0;
-
-//   return (
-//     <Link  to={`/Detail/${_id}`}>
-//       <div className='relative pl-7 flex-1 flex flex-col hover:shadow-2xl transition-shadow duration-300'>
-//         {/* Phần khuyến mãi */}
-//         {discountPercentage > 0 && (
-//         <div className='absolute top-2 right-2 w-20 h-8 flex items-center justify-center bg-red-500 text-white text-xs rounded-full'>
-//         {discountPercentage > 0 ? `${discountPercentage}%` : 'No Discount'}
-//       </div>
-
-//         )}
-//         <img src={imageUrl} alt={name} />
-//         <div className='text-xs'>{name}</div>
-//         <div className='flex flex-row mt-3'>
-//           {newPrice ? (
-//             <>
-//               <p className="text-xs">
-//                 <span className="line-through">{price}</span>
-//               </p>
-//               <p className='text-red-500 ml-2'>{newPrice}</p>
-//             </>
-//           ) : (
-//             <p className='text-xs'>{price}</p>
-//           )}
-//           <p className='text-slate-400 hover:text-red-500 block ml-2'>
-//             <FontAwesomeIcon icon={faHeart} className='text-current' />
-//           </p>
-//         </div>
-//       </div>
-//     </Link>
-//   );
-// };
-
-// export default ProductBlock;
-// ProductBlock.jsx
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 const ProductBlock = ({ product }) => {
-  const { _id, name, price, newPrice, imageUrl, discount } = product;
+  const { _id, name, price, newPrice, imageUrl, discount, versions } = product;
+
+  // Lấy giá của phiên bản đầu tiên nếu có
+  const versionPrice =
+    versions && versions.length > 0 ? versions[0].price : price;
 
   // Tính toán phần trăm khuyến mãi
   const discountPercentage =
-    price && newPrice ? Math.round(((price - newPrice) / price) * 100) : 0;
+    versionPrice && newPrice
+      ? Math.round(((versionPrice - newPrice) / versionPrice) * 100)
+      : 0;
 
   return (
     <Link to={`/product/${_id}`}>
@@ -80,12 +40,12 @@ const ProductBlock = ({ product }) => {
           {newPrice ? (
             <>
               <p className="text-xs">
-                <span className="line-through">{price}</span>
+                <span className="line-through">{versionPrice}</span>
               </p>
               <p className="ml-2 text-red-500">{newPrice}</p>
             </>
           ) : (
-            <p className="text-xs">{price}</p>
+            <p className="text-xs">{versionPrice}</p>
           )}
           <p className="ml-2 block text-slate-400 hover:text-[#ffd040]">
             <FontAwesomeIcon icon={faHeart} className="text-current" />
