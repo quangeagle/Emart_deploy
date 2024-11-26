@@ -10,6 +10,8 @@ import {
 import axios from "axios";
 import { useUser } from "./UserContext";
 import Breadcrumb from "./Breadcrumb";
+import { ToastContainer, toast } from "react-toastify"; // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
 
 function DetailProduct() {
   const { id } = useParams();
@@ -80,8 +82,10 @@ function DetailProduct() {
         })
         .then((response) => {
           if (response.data.success) {
+            toast.success("🎉 Sản phẩm đã được thêm vào giỏ hàng thành công!");
             navigate("/cart");
           } else {
+            toast.error(response.data.message || "Lỗi thêm vào giỏ hàng");
             console.error("Error adding to cart:", response.data.message);
           }
         })
@@ -104,9 +108,15 @@ function DetailProduct() {
         })
         .then((response) => {
           if (response.data.success) {
+            toast.success(
+              "🎉 Sản phẩm đã được thêm vào danh sách yêu thích thành công!",
+            );
             setLiked(true);
             navigate("/likelist");
           } else {
+            toast.error(
+              response.data.message || "Lỗi thêm vào danh sách yêu thích",
+            );
             console.error("Error adding to likelist:", response.data.message);
           }
         })
@@ -267,6 +277,7 @@ function DetailProduct() {
         </div>
       )}
       <Footer />
+      <ToastContainer position="top-right" autoClose={2000} />
     </div>
   );
 }

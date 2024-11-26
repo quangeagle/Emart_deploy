@@ -66,7 +66,8 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useUser } from "./UserContext"; // Assuming you have a UserContext to get the logged-in user's ID
-import "./index.css";
+import { ToastContainer, toast } from "react-toastify"; // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
 
 function LikeList() {
   const [favorites, setFavorites] = useState([]);
@@ -85,16 +86,48 @@ function LikeList() {
       });
   }, [userId]);
 
-  const removeFromLikeList = (productId) => {
+  const removeFromLikeList = (productId, versionId) => {
     axios
-      .post("http://localhost:3005/likelist/remove", { userId, productId })
+      .post("http://localhost:3005/likelist/remove", {
+        userId,
+        productId,
+        versionId,
+      })
       .then((response) => {
         setFavorites(
-          favorites.filter((fav) => fav.productId._id !== productId),
+          favorites.filter(
+            (fav) =>
+              !(fav.productId === productId && fav.versionId === versionId),
+          ),
         );
+        console.log(response.data.message); // Log phản hồi từ server
       })
       .catch((error) => {
-        console.error("Error removing from likelist:", error);
+        console.error(
+          "Error removing from likelist:",
+          error.response?.data || error.message,
+        );
+      });
+  };
+
+  const handleAddToCart = (favorite, quantity = 1) => {
+    axios
+      .post("http://localhost:3005/cart/add", {
+        userId,
+        productId: favorite.productId,
+        versionId: favorite.versionId,
+        quantity,
+      })
+      .then((response) => {
+        if (response.data.success) {
+          toast.success("🎉 Sản phẩm đã được thêm vào giỏ hàng thành công!"); // Hiển thị thông báo thành công
+        } else {
+          toast.error(response.data.message || "Lỗi thêm vào giỏ hàng");
+        }
+      })
+      .catch((error) => {
+        toast.error("Lỗi khi thêm sản phẩm vào giỏ hàng");
+        console.error(error.response?.data || error.message);
       });
   };
 
@@ -128,8 +161,7 @@ function LikeList() {
               </thead>
               <tbody>
                 {favorites.map((favorite) => {
-                  const version = favorite.versionId; // Lấy thông tin versionId
-
+                  const isInCart = false; // Giả sử kiểm tra từ backend hoặc state của giỏ hàng
                   return (
                     <tr
                       key={favorite._id}
@@ -150,13 +182,25 @@ function LikeList() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex items-center justify-center space-x-2">
-                          <button className="rounded-md bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600">
-                            Thêm vào giỏ
+                          <button
+                            disabled={isInCart}
+                            className={`rounded-md px-4 py-2 text-white ${
+                              isInCart
+                                ? "cursor-not-allowed bg-gray-400"
+                                : "bg-yellow-500 hover:bg-yellow-600"
+                            }`}
+                            onClick={() => handleAddToCart(favorite)}
+                          >
+                            {isInCart ? "Đã thêm" : "Thêm vào giỏ"}
                           </button>
+
                           <button
                             className="rounded-md bg-red-500 p-2 text-white hover:bg-red-600"
                             onClick={() =>
-                              removeFromLikeList(favorite.productId)
+                              removeFromLikeList(
+                                favorite.productId,
+                                favorite.versionId,
+                              )
                             }
                           >
                             <FontAwesomeIcon icon={faX} />
@@ -179,6 +223,7 @@ function LikeList() {
       </div>
 
       <Footer />
+      <ToastContainer position="top-right" autoClose={2000} />
     </>
   );
 }
