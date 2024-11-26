@@ -253,7 +253,7 @@ function Payment() {
         message: `Payment for order #${orderData.orderId}`,
         userID: userId,
         orderID: orderData.orderId,
-        returnUrl: VITE_REDIRECT_URL,
+        returnUrl: "http://localhost:5173",
       } ,{
         headers: { Authorization: `Bearer sk_pointerf97ad5e90eb156b9a2b5d18e44bb37f8c89c2f0db611038a751c3bc7e0ec63c6` },
         withCredentials :false
