@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
@@ -134,15 +134,15 @@ const Home = () => {
 
         <div className="ml-32 mr-32 mt-5">
           {/* Image cards at the top */}
-          <div className="mb-10 mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+          <div className="mb-10 mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 justify-center">
             {["sale1.jpg", "sale2.jpg", "sale3.jpg"].map((imgSrc, idx) => (
               <div
                 key={idx}
-                className="relative h-52 w-96 overflow-hidden rounded-lg border border-gray-300"
+                className="relative h-52 w-full sm:w-96 md:w-96 lg:w-96 overflow-hidden rounded-lg border border-gray-300"
               >
                 <img
                   src={imgSrc}
-                  className="transform transition-transform hover:scale-110 hover:opacity-50"
+                  className="transform transition-transform hover:scale-110 hover:opacity-50 w-full h-full object-cover"
                 />
                 <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 p-2 text-center text-white">
                   {idx === 0
@@ -231,29 +231,3 @@ const Home = () => {
 };
 
 export default Home;
-
-// import axios from 'axios'
-// import React, { useEffect, useState } from 'react'
-// import ProductBlock from './ProductBlock';
-
-// const Home = () => {
-//   const [get, setProduct] = useState([])
-//   useEffect(() => {
-//     axios.get('http://localhost:3004/product/get')
-//     .then(res => {
-//       setProduct(res.data)
-//       console.log(res.data)
-//     }).catch(err => console.log(err))
-//   } , [])
-//   return (
-//     <div className='book-list'>
-//       {
-//         get.map(product => {
-//           return <ProductBlock key={product.id} product = {product} ></ProductBlock>
-//         })
-//       }
-//     </div>
-//   )
-// }
-
-// export default Home

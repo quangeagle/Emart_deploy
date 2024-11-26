@@ -23,14 +23,19 @@
     "dotenv": "^16.4.5",
     "i18next": "^24.0.0",
     "jwt-decode": "^4.0.0",
-    "pointer-wallet": "^1.0.8",
+    "pointer-wallet": "^2.0.1",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
+    "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
     "react-i18next": "^15.1.1",
     "react-router-dom": "^6.24.1",
+
     "react-toastify": "^10.0.6",
+
+    "react-time-picker": "^7.0.0",
+
     "sso-pointer": "^1.0.7",
     "swiper": "^11.1.4"
   },
