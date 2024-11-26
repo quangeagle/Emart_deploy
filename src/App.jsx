@@ -1,28 +1,32 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./Login";
-import Home from "./Home";
-import LikeList from "./LikeList";
-import DetailProduct from "./detailProduct";
-import ListProduct from "./ListProduct";
-import ShoppingCart from "./Cart";
-import Shipping from "./ship";
-import Signup from "./signup";
-import Kho from "./Admin/Kho";
-import QlNhaCC from "./Admin/QlNhaCungCap";
-import Ship2 from "./Admin/Ship";
-import axios from "axios";
-import CreateSupplierAndCategory from "./Admin/CreateSupplierAndCategory";
-import CreateProduct from "./Admin/CreateProduct";
-import CreatePromotion from "./Admin/CreatePromotion";
-import SupplierList from "./Admin/listNCC";
-import CategoryList from "./Admin/CategoryList";
-import ProductList from "./Admin/ProductList";
-import Header from "./header";
-import CreateHangHoaAndCate from "./Admin/CreateHangHoaAndCate";
-import { useUser } from "./UserContext";
-import Payment from "./Payment";
-import SupplierProducts from "./Admin/SupplierProducts";
+
+
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './Login';
+import Home from './Home';
+import LikeList from './LikeList';
+import DetailProduct from './detailProduct';
+import ListProduct from './ListProduct';
+import ShoppingCart from './Cart';
+import Shipping from './ship';
+import Signup from './signup';
+import Kho from './Admin/Kho';
+import QlNhaCC from './Admin/QlNhaCungCap';
+import Ship2 from './Admin/Ship';
+import axios from 'axios';
+import CreateSupplierAndCategory from './Admin/CreateSupplierAndCategory';
+import CreateProduct from './Admin/CreateProduct';
+import CreatePromotion from './Admin/CreatePromotion';
+import SupplierList from './Admin/listNCC';
+import CategoryList from './Admin/CategoryList';
+import ProductList from './Admin/ProductList';
+import Header from './header';
+import CreateHangHoaAndCate from './Admin/CreateHangHoaAndCate';
+import { useUser } from './UserContext';
+import Payment from './Payment';
+import SupplierProducts from './Admin/SupplierProducts';
+import AccountInfo from './AccountInfo';
+import ConnectWallet from './connect';
 
 function App() {
   const { userId, updateUserId } = useUser(); // Sử dụng UserContext
@@ -74,11 +78,11 @@ function App() {
           <Route path="/kho" element={<Kho />} />
           <Route path="/Qlnhacc" element={<QlNhaCC />} />
           <Route path="/ship2" element={<Ship2 />} />
+          <Route path="/connect" element={<ConnectWallet />} />
           <Route path="/Payment" element={<Payment />} />
-          <Route
-            path="/taonhacungcap"
-            element={<CreateSupplierAndCategory />}
-          />
+          <Route path="/account-info" element={<AccountInfo />} />
+          <Route path="/taonhacungcap" element={<CreateSupplierAndCategory />} />
+
           <Route path="/dsncc" element={<SupplierList />} />
           <Route path="/create-product" element={<CreateProduct />} />
           <Route path="/create-promotion" element={<CreatePromotion />} />
