@@ -42,11 +42,23 @@ const Home = () => {
     "logo5.png",
   ];
 
+  const fillTopSellingProducts = (products, minItems) => {
+    const filledProducts = [...products];
+    while (filledProducts.length < minItems) {
+      filledProducts.push({
+        id: `placeholder-${filledProducts.length}`,
+        name: "Sản phẩm trống",
+        price: 0,
+        imageUrl: "placeholder.png",
+      });
+    }
+    return filledProducts;
+  };
 
   // Giới hạn số lượng sản phẩm hiển thị là 8
-  const topSellingProducts = products.slice(0, 8); // Hiển thị 8 sản phẩm đầu tiên
+  const topSellingProducts = fillTopSellingProducts(products.slice(0, 8), 3); // Hiển thị 8 sản phẩm đầu tiên
 
-  console.log(topSellingProducts);  // In ra console để kiểm tra xem sản phẩm có được tải đúng không
+  console.log(topSellingProducts); // In ra console để kiểm tra xem sản phẩm có được tải đúng không
 
   return (
     <div className="bg-slate-100">
@@ -77,8 +89,6 @@ const Home = () => {
           ))}
         </div>
 
-
-
         {/* Slider sản phẩm đầu tiên */}
         <div className="h-auto bg-white">
           <div className="border-b-4 pb-4 pl-6 pt-5 text-xl font-bold">
@@ -108,42 +118,34 @@ const Home = () => {
       </div>
 
       {/* Phần sản phẩm bán chạy với hình ảnh */}
-      <div className="mx-32 mb-24 mt-9 h-auto bg-white ">
+      <div className="mx-32 mb-24 mt-9 h-auto bg-white">
         <div className="border-b-4 pb-4 pl-6 pt-5 text-xl font-bold">
           SẢN PHẨM BÁN CHẠY
         </div>
-        <div className="flex w-[100%]">
-          <div className="flex flex-row h-auto items-center w-[30%]">
-            {/* Hình ảnh bên trái */}
-            <div className="flex-shrink-0 w-96 h-96 mr-8">
-              <img
-                src="sale4.jpg"
-                className="w-[100%] h-[100%] object-cover border border-gray-300 rounded-lg"
-                alt="Sale"
-              />
-            </div>
+        <div className="flex w-full">
+          {/* Hình ảnh bên trái */}
+          <div className="mr-8 h-96 w-80 flex-shrink-0">
+            <img
+              src="sale4.jpg"
+              className="h-full w-full rounded-lg border border-gray-300 object-cover"
+              alt="Sale"
+            />
           </div>
-          {/* Phần sản phẩm */}
-          <div className="h-auto w-[70%]">
-            <div className="swiper-container h-auto w-full group">
-              <Swiper
-                navigation={true}
-                modules={[Navigation]}
-                className="mySwiper"
-                slidesPerView={3}  // Hiển thị 3 sản phẩm mỗi lần
-                spaceBetween={20}
-              >
-                {/* Hiển thị 3 sản phẩm bán chạy */}
-                {topSellingProducts.map((product, index) => (
-                  <SwiperSlide
-                    key={index}
-                    className="flex flex-row items-center bg-white text-lg text-black"
-                  >
-                    <ProductBlock key={product.id} product={product} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
+          {/* Slider sản phẩm */}
+          <div className="ml-[-20px] h-auto w-[70%]">
+            <Swiper
+              navigation={true}
+              modules={[Navigation]}
+              className="mySwiper"
+              slidesPerView={3}
+              spaceBetween={20}
+            >
+              {topSellingProducts.map((product, index) => (
+                <SwiperSlide key={index}>
+                  <ProductBlock key={product.id} product={product} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
       </div>

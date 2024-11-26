@@ -47,9 +47,17 @@ const ProductBlock = ({ product }) => {
     }
   };
 
+  if (!product || product.name === "Sản phẩm trống") {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-4 shadow-sm">
+        <p className="text-gray-400">Sản phẩm đang cập nhật...</p>
+      </div>
+    );
+  }
+
   return (
     <Link to={`/product/${_id}`}>
-      <div className="relative m-6 flex flex-1 flex-col p-7 transition-shadow duration-300 hover:shadow-2xl">
+      <div className="relative m-6 flex w-full max-w-xs flex-col p-7 transition-shadow duration-300 hover:shadow-2xl">
         <div className="flex h-48 w-full items-center justify-center overflow-hidden rounded-lg bg-gray-100">
           <img
             src={imageUrl}
@@ -58,9 +66,10 @@ const ProductBlock = ({ product }) => {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>
-        <h3 className="font-inherit mt-4 text-center text-[18px] font-medium text-gray-800 group-hover:text-gray-900">
+        <h3 className="font-inherit mt-4 truncate text-center text-[18px] font-medium text-gray-800 group-hover:text-gray-900">
           {name}
         </h3>
+
         <div className="mt-3 flex flex-row items-center justify-between">
           {/* Hiển thị Giá */}
           Giá:
