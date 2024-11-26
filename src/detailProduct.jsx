@@ -109,7 +109,9 @@ function DetailProduct() {
         .then((response) => {
           if (response.data.success) {
             toast.success(
-              "🎉 Sản phẩm đã được thêm vào danh sách yêu thích thành công!",
+              liked
+                ? "🎉 Sản phẩm đã được gỡ khỏi danh sách yêu thích!"
+                : "🎉 Sản phẩm đã được thêm vào danh sách yêu thích!",
             );
             setLiked(true);
             navigate("/likelist");
@@ -217,8 +219,9 @@ function DetailProduct() {
             </button>
             <button
               onClick={addToLikeList}
-              className={`ml-5 h-8 rounded px-2 py-1 ${liked ? "bg-red-500 text-white" : "bg-gray-200 text-black"
-                } hover:bg-[#ffd040] hover:text-white`}
+              className={`ml-5 h-8 rounded px-2 py-1 ${
+                liked ? "bg-red-500 text-white" : "bg-gray-200 text-black"
+              } hover:bg-[#ffd040] hover:text-white`}
             >
               <FontAwesomeIcon icon={faHeart} />
             </button>
@@ -233,10 +236,11 @@ function DetailProduct() {
               <button
                 key={version._id}
                 onClick={() => handleVersionSelect(version)}
-                className={`rounded px-2 py-1 ${selectedVersion._id === version._id
+                className={`rounded px-2 py-1 ${
+                  selectedVersion._id === version._id
                     ? "bg-[#ffd040] text-white"
                     : "bg-gray-200 text-black"
-                  }`}
+                }`}
               >
                 {version.name}
               </button>

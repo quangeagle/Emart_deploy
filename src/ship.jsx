@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useUser } from "./UserContext";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify"; // Import Toastify
+import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
+import { useNavigate } from "react-router-dom";
 
 const Shipping = () => {
   const { user } = useUser();
@@ -26,6 +29,7 @@ const Shipping = () => {
     selectedTime: "",
     paymentMethod: "",
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (userId) {
@@ -122,9 +126,17 @@ const Shipping = () => {
     // Validate delivery date (must be today or future)
     const today = new Date();
     const selectedDateObj = new Date(selectedDate);
-    if (selectedDateObj < today) {
+
+    // Minimum date should be today
+    const minDate = new Date(today);
+
+    // Maximum date should be 3 days from today
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 3); // Maximum date should be in 3 days
+
+    if (selectedDateObj < minDate || selectedDateObj > maxDate) {
       newErrors.selectedDate =
-        "Ngày giao hàng chỉ được chọn trong hôm nay hoặc tương lai.";
+        "Ngày giao hàng chỉ được chọn trong 3 ngày kể từ hôm nay.";
       valid = false;
     }
 
@@ -143,40 +155,34 @@ const Shipping = () => {
     return valid;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!validate()) return;
 
-    const orderItems = cartItems
-      .filter(
-        (item) =>
-          item.versionId &&
-          item.quantity &&
-          item.versionName &&
-          item.versionPrice &&
-          item.versionImage,
-      )
-      .map((item) => ({
-        versionId: item.versionId,
-        quantity: item.quantity,
-        name: item.versionName,
-        price: item.versionPrice,
-        imageUrl: item.versionImage,
-      }));
+    const orderItems = cartItems.map((item) => ({
+      versionId: item.versionId,
+      quantity: item.quantity,
+      name: item.versionName,
+      price: item.versionPrice,
+      imageUrl: item.versionImage,
+    }));
 
-    console.log("Sending orderItems:", orderItems);
-
-    axios
-      .post("http://localhost:3007/ship/themship", {
-        ...shippingInfo,
-        userId,
-        orderItems,
-      })
-      .then((response) => {
-        console.log("Shipping info saved successfully");
-      })
-      .catch((error) => {
+    if (shippingInfo.paymentMethod === "COD") {
+      try {
+        await axios.post("http://localhost:3005/ship/themship", {
+          ...shippingInfo,
+          userId,
+          orderItems,
+        });
+        toast.success("Đã lưu đơn hàng thành công!");
+        navigate("/confirm");
+      } catch (error) {
         console.error("Error saving shipping info:", error);
-      });
+        toast.error("Không thể lưu đơn hàng. Vui lòng thử lại.");
+      }
+    } else {
+      navigate("/Payment");
+    }
   };
 
   const today = new Date();
@@ -187,13 +193,19 @@ const Shipping = () => {
     return date.toISOString().split("T")[0];
   };
 
+  const calculateTotal = () => {
+    return cartItems.reduce(
+      (total, item) => total + (item.versionPrice || 0) * item.quantity,
+      0,
+    );
+  };
+
   return (
     <div className="mx-auto max-w-5xl p-6">
       <h2 className="mb-6 text-center text-2xl font-semibold text-gray-700">
         Thông tin Giỏ Hàng
       </h2>
 
-      {/* Giỏ hàng */}
       <div className="mb-6 rounded-lg bg-white p-4 shadow-md">
         <table className="w-full table-auto border-collapse border-2">
           <thead>
@@ -231,156 +243,156 @@ const Shipping = () => {
             )}
           </tbody>
         </table>
+
+        {/* Tổng tiền */}
+        <div className="mt-4 text-right">
+          <h3 className="text-lg font-semibold">Tổng giá trị đơn hàng:</h3>
+          <p className="text-xl font-bold text-red-500">{calculateTotal()}₫</p>
+        </div>
       </div>
 
-      {/* Thông tin giao hàng */}
       <div className="rounded-lg bg-white p-6 shadow-md">
         <h3 className="mb-4 text-xl font-semibold">Thông tin giao hàng</h3>
 
-        <div className="space-y-4">
-          {/* // Địa chỉ */}
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">
-              Địa chỉ <span className="text-red-600">*</span>:
-            </label>
-            <input
-              type="text"
-              name="address"
-              value={shippingInfo.address}
-              onChange={handleShippingInfoChange}
-              className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
-            />
-            {errors.address && (
-              <div className="text-sm text-red-600">{errors.address}</div>
-            )}
-          </div>
-          {/* // Tên */}
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">
-              Tên <span className="text-red-600">*</span>:
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={shippingInfo.name}
-              onChange={handleShippingInfoChange}
-              className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
-            />
-            {errors.name && (
-              <div className="text-sm text-red-600">{errors.name}</div>
-            )}
-          </div>
-          {/* // Số điện thoại */}
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">
-              Số điện thoại <span className="text-red-600">*</span>:
-            </label>
-            <input
-              type="text"
-              name="phone"
-              value={shippingInfo.phone}
-              onChange={handleShippingInfoChange}
-              className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
-            />
-            {errors.phone && (
-              <div className="text-sm text-red-600">{errors.phone}</div>
-            )}
-          </div>
-          {/* // Email */}
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">
-              Email <span className="text-red-600">*</span>:
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={shippingInfo.email}
-              onChange={handleShippingInfoChange}
-              className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
-            />
-            {errors.email && (
-              <div className="text-sm text-red-600">{errors.email}</div>
-            )}
-          </div>
-          {/* // Ngày giao hàng */}
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">
-              Ngày giao hàng <span className="text-red-600">*</span>:
-            </label>
-            <input
-              type="date"
-              name="selectedDate"
-              value={shippingInfo.selectedDate}
-              onChange={handleShippingInfoChange}
-              min={formatDate(today)}
-              max={formatDate(maxDate)}
-              className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
-            />
-            {errors.selectedDate && (
-              <div className="text-sm text-red-600">{errors.selectedDate}</div>
-            )}
-          </div>
-          {/* // Giờ giao hàng */}
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">
-              Giờ giao hàng <span className="text-red-600">*</span>:
-            </label>
-            <input
-              type="time"
-              name="selectedTime"
-              value={shippingInfo.selectedTime}
-              onChange={handleShippingInfoChange}
-              className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
-            />
-            {errors.selectedTime && (
-              <div className="text-sm text-red-600">{errors.selectedTime}</div>
-            )}
-          </div>
-          {/* // Phương thức thanh toán */}
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">
-              Phương thức thanh toán <span className="text-red-600">*</span>:
-            </label>
-            <select
-              name="paymentMethod"
-              value={shippingInfo.paymentMethod}
-              onChange={handleShippingInfoChange}
-              className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
-            >
-              <option value="COD">Thanh toán khi nhận hàng (COD)</option>
-              <option value="CreditCard">Thẻ tín dụng</option>
-            </select>
-            {errors.paymentMethod && (
-              <div className="text-sm text-red-600">{errors.paymentMethod}</div>
-            )}
-          </div>
-          {/* Ghi chú */}
-          <div className="flex flex-col">
-            <label className="text-sm font-medium">Ghi chú:</label>
-            <textarea
-              name="note"
-              value={shippingInfo.note}
-              onChange={handleShippingInfoChange}
-              className="rounded-lg border p-3 focus:border-[#ffd040] focus:outline-none"
-            />
-          </div>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            {/* Form Fields */}
+            <div className="flex flex-col">
+              <label className="text-sm font-medium">
+                Địa chỉ <span className="text-red-600">*</span>:
+              </label>
+              <input
+                type="text"
+                name="address"
+                value={shippingInfo.address}
+                onChange={handleShippingInfoChange}
+                className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
+              />
+              {errors.address && (
+                <div className="text-sm text-red-600">{errors.address}</div>
+              )}
+            </div>
 
-        {/* Nút xác nhận */}
-        <div className="mt-6 flex space-x-4">
-          <button
-            onClick={handleSubmit}
-            className="rounded bg-blue-500 px-4 py-2 text-white"
-          >
-            Xác nhận
-          </button>
-          <Link to="/Payment">
-            <button className="ml-2 rounded bg-yellow-400 px-4 py-2 text-white">
-              Thanh Toán
-            </button>
-          </Link>
-        </div>
+            <div className="flex flex-col">
+              <label className="text-sm font-medium">
+                Tên người nhận <span className="text-red-600">*</span>:
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={shippingInfo.name}
+                onChange={handleShippingInfoChange}
+                className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
+              />
+              {errors.name && (
+                <div className="text-sm text-red-600">{errors.name}</div>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm font-medium">
+                Số điện thoại <span className="text-red-600">*</span>:
+              </label>
+              <input
+                type="text"
+                name="phone"
+                value={shippingInfo.phone}
+                onChange={handleShippingInfoChange}
+                className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
+              />
+              {errors.phone && (
+                <div className="text-sm text-red-600">{errors.phone}</div>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm font-medium">
+                Email <span className="text-red-600">*</span>:
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={shippingInfo.email}
+                onChange={handleShippingInfoChange}
+                className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
+              />
+              {errors.email && (
+                <div className="text-sm text-red-600">{errors.email}</div>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm font-medium">
+                Ngày giao hàng <span className="text-red-600">*</span>:
+              </label>
+              <input
+                type="date"
+                name="selectedDate"
+                value={shippingInfo.selectedDate}
+                onChange={handleShippingInfoChange}
+                min={formatDate(today)}
+                max={formatDate(maxDate)}
+                className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
+              />
+              {errors.selectedDate && (
+                <div className="text-sm text-red-600">
+                  {errors.selectedDate}
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm font-medium">
+                Giờ giao hàng <span className="text-red-600">*</span>:
+              </label>
+              <input
+                type="time"
+                name="selectedTime"
+                value={shippingInfo.selectedTime}
+                onChange={handleShippingInfoChange}
+                className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
+              />
+              {errors.selectedTime && (
+                <div className="text-sm text-red-600">
+                  {errors.selectedTime}
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm font-medium">
+                Phương thức thanh toán <span className="text-red-600">*</span>:
+              </label>
+              <select
+                name="paymentMethod"
+                value={shippingInfo.paymentMethod}
+                onChange={handleShippingInfoChange}
+                className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
+              >
+                <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+                <option value="creditCard">Thanh toán trực tuyến</option>
+              </select>
+              {errors.paymentMethod && (
+                <div className="text-sm text-red-600">
+                  {errors.paymentMethod}
+                </div>
+              )}
+            </div>
+
+            {/* Nút xác nhận */}
+            <div className="mt-6 flex w-[100px] space-x-4">
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="w-full rounded-lg border bg-[#ffd040] py-2 text-white"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
+      <ToastContainer position="top-right" autoClose={2000} />
     </div>
   );
 };
