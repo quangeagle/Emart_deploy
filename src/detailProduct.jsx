@@ -234,8 +234,8 @@ function DetailProduct() {
                 key={version._id}
                 onClick={() => handleVersionSelect(version)}
                 className={`rounded px-2 py-1 ${selectedVersion._id === version._id
-                    ? "bg-[#ffd040] text-white"
-                    : "bg-gray-200 text-black"
+                  ? "bg-[#ffd040] text-white"
+                  : "bg-gray-200 text-black"
                   }`}
               >
                 {version.name}

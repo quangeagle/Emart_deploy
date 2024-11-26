@@ -4,11 +4,12 @@ import { faChevronDown, faSearch, faCartShopping, faHeart, faUser, faSignOutAlt,
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUser } from './UserContext';
-import cc from '../src/Image/emart.png'
+import cc from '../src/Image/emart.png';
 
 function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");  // State for search query
   const { user, updateUserInfo } = useUser();
   const navigate = useNavigate();
 
@@ -20,7 +21,7 @@ function Header() {
     axios
       .get("http://localhost:3005/auth/logout")
       .then(() => {
-        updateUserInfo(null, ""); // Đặt lại thông tin người dùng
+        updateUserInfo(null, ""); // Reset user info
         localStorage.removeItem("authToken");
         navigate("/login");
       })
@@ -35,6 +36,12 @@ function Header() {
     navigate('/connect');
   };
 
+  const handleSearch = () => {
+    if (searchQuery.trim() !== "") {
+      navigate(`/product-detail/${searchQuery}`);  // Navigate to the product detail page with the search query
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token && !user.email) {
@@ -46,7 +53,7 @@ function Header() {
             updateUserInfo(response.data.userId, response.data.email);
           }
         })
-        .catch(error => console.error('Lỗi xác minh đăng nhập:', error));
+        .catch(error => console.error('Login verification error:', error));
     }
   }, [user, updateUserInfo]);
 
@@ -125,8 +132,13 @@ function Header() {
             className="h-10 w-full rounded-full bg-white pl-4 pr-12 text-sm placeholder-gray-500"
             type="text"
             placeholder="Tìm kiếm sản phẩm"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <div className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-full bg-orange-500">
+          <div
+            className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-full bg-orange-500"
+            onClick={handleSearch}
+          >
             <FontAwesomeIcon icon={faSearch} className="text-sm text-white" />
           </div>
         </div>
