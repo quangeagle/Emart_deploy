@@ -167,21 +167,24 @@ const Shipping = () => {
       imageUrl: item.versionImage,
     }));
 
-    if (shippingInfo.paymentMethod === "COD" || shippingInfo.paymentMethod === "CreditCard") {
+    if (
+      shippingInfo.paymentMethod === "COD" ||
+      shippingInfo.paymentMethod === "CreditCard"
+    ) {
       try {
         // Gửi request lưu đơn hàng
-        await axios.post("http://localhost:3007/ship/themship", {
+        await axios.post("http://localhost:3005/ship/themship", {
           ...shippingInfo,
           userId,
           orderItems,
         });
         toast.success("Đã lưu đơn hàng thành công!");
-    
+
         // Chuyển hướng tùy theo phương thức thanh toán
         if (shippingInfo.paymentMethod === "COD") {
-          navigate("/confirm");  // Chuyển đến trang xác nhận khi thanh toán COD
+          navigate("/confirm"); // Chuyển đến trang xác nhận khi thanh toán COD
         } else {
-          navigate("/Payment");  // Chuyển đến trang thanh toán khi chọn CreditCard
+          navigate("/Payment"); // Chuyển đến trang thanh toán khi chọn CreditCard
         }
       } catch (error) {
         console.error("Error saving shipping info:", error);
@@ -189,9 +192,9 @@ const Shipping = () => {
       }
     } else {
       toast.error("Phương thức thanh toán không hợp lệ.");
-      navigate("/");  // Quay lại trang chính nếu phương thức thanh toán không hợp lệ
+      navigate("/"); // Quay lại trang chính nếu phương thức thanh toán không hợp lệ
     }
-  }    
+  };
 
   const today = new Date();
   const maxDate = new Date();

@@ -1,17 +1,24 @@
-
-import { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faSearch, faCartShopping, faHeart, faUser, faSignOutAlt, faBell, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useUser } from './UserContext';
-import cc from '../src/Image/emart.png';
-
+import { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronDown,
+  faSearch,
+  faCartShopping,
+  faHeart,
+  faUser,
+  faSignOutAlt,
+  faBell,
+  faQuestionCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useUser } from "./UserContext";
+import cc from "../src/Image/emart.png";
 
 function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");  // State for search query
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const { user, updateUserInfo } = useUser();
   const navigate = useNavigate();
 
@@ -38,12 +45,6 @@ function Header() {
     navigate("/connect");
   };
 
-  const handleSearch = () => {
-    if (searchQuery.trim() !== "") {
-      navigate(`/product-detail/${searchQuery}`);  // Navigate to the product detail page with the search query
-    }
-  };
-
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token && !user.email) {
@@ -58,9 +59,16 @@ function Header() {
         })
 
         .catch((error) => console.error("Lỗi xác minh đăng nhập:", error));
-
     }
   }, [user, updateUserInfo]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim() !== "") {
+      navigate(`/search?query=${searchQuery}`); // Chuyển hướng đến trang kết quả
+      setSearchQuery(""); // Xóa từ khóa sau khi tìm kiếm
+    }
+  };
 
   return (
     <header className="bg-gradient-to-r from-orange-500 to-orange-600">
@@ -71,7 +79,7 @@ function Header() {
             Kênh Người Bán
           </Link>
           <Link to="/become-seller" className="hover:underline">
-            Trở thành Người bán Shopee
+            Trở thành Người bán hàng
           </Link>
           <Link to="/download" className="hover:underline">
             Tải ứng dụng
@@ -159,11 +167,16 @@ function Header() {
 
         <div className="relative ml-8 flex w-[700px] items-center">
           <input
-            className="h-10 w-full rounded-full bg-white pl-4 pr-12 text-sm placeholder-gray-500"
+            className="h-10 w-full rounded-full bg-white pl-4 pr-12 text-sm placeholder-gray-500 outline-none focus:ring-2 focus:ring-orange-500"
             type="text"
             placeholder="Tìm kiếm sản phẩm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch(e); // Gọi hàm handleSearch khi nhấn Enter
+              }
+            }}
           />
           <div
             className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 transform cursor-pointer items-center justify-center rounded-full bg-orange-500"
