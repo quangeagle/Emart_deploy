@@ -37,7 +37,7 @@ const Shipping = () => {
           } else {
             console.error(
               "Received data is not in the expected format:",
-              response.data
+              response.data,
             );
             setCartItems([]);
           }
@@ -123,7 +123,8 @@ const Shipping = () => {
     const today = new Date();
     const selectedDateObj = new Date(selectedDate);
     if (selectedDateObj < today) {
-      newErrors.selectedDate = "Ngày giao hàng chỉ được chọn trong hôm nay hoặc tương lai.";
+      newErrors.selectedDate =
+        "Ngày giao hàng chỉ được chọn trong hôm nay hoặc tương lai.";
       valid = false;
     }
 
@@ -133,7 +134,8 @@ const Shipping = () => {
     const endTime = new Date("1970-01-01T18:00:00Z");
 
     if (selectedTimeObj < startTime || selectedTimeObj > endTime) {
-      newErrors.selectedTime = "Giờ giao hàng phải trong khoảng từ 9:00 sáng đến 18:00 tối.";
+      newErrors.selectedTime =
+        "Giờ giao hàng phải trong khoảng từ 9:00 sáng đến 18:00 tối.";
       valid = false;
     }
 
@@ -151,7 +153,7 @@ const Shipping = () => {
           item.quantity &&
           item.versionName &&
           item.versionPrice &&
-          item.versionImage
+          item.versionImage,
       )
       .map((item) => ({
         versionId: item.versionId,
@@ -218,7 +220,7 @@ const Shipping = () => {
                     <td className="border-2 p-3">{item.quantity}</td>
                     <td className="border-2 p-3">{item.versionPrice}₫</td>
                   </tr>
-                ) : null
+                ) : null,
               )
             ) : (
               <tr>
@@ -236,9 +238,11 @@ const Shipping = () => {
         <h3 className="mb-4 text-xl font-semibold">Thông tin giao hàng</h3>
 
         <div className="space-y-4">
-          {/* Địa chỉ */}
+          {/* // Địa chỉ */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium">Địa chỉ:</label>
+            <label className="text-sm font-medium">
+              Địa chỉ <span className="text-red-600">*</span>:
+            </label>
             <input
               type="text"
               name="address"
@@ -247,13 +251,14 @@ const Shipping = () => {
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
             {errors.address && (
-              <div className="text-red-600 text-sm">{errors.address}</div>
+              <div className="text-sm text-red-600">{errors.address}</div>
             )}
           </div>
-
-          {/* Tên */}
+          {/* // Tên */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium">Tên:</label>
+            <label className="text-sm font-medium">
+              Tên <span className="text-red-600">*</span>:
+            </label>
             <input
               type="text"
               name="name"
@@ -262,13 +267,14 @@ const Shipping = () => {
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
             {errors.name && (
-              <div className="text-red-600 text-sm">{errors.name}</div>
+              <div className="text-sm text-red-600">{errors.name}</div>
             )}
           </div>
-
-          {/* Số điện thoại */}
+          {/* // Số điện thoại */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium">Số điện thoại:</label>
+            <label className="text-sm font-medium">
+              Số điện thoại <span className="text-red-600">*</span>:
+            </label>
             <input
               type="text"
               name="phone"
@@ -277,13 +283,14 @@ const Shipping = () => {
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
             {errors.phone && (
-              <div className="text-red-600 text-sm">{errors.phone}</div>
+              <div className="text-sm text-red-600">{errors.phone}</div>
             )}
           </div>
-
-          {/* Email */}
+          {/* // Email */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium">Email:</label>
+            <label className="text-sm font-medium">
+              Email <span className="text-red-600">*</span>:
+            </label>
             <input
               type="email"
               name="email"
@@ -292,13 +299,14 @@ const Shipping = () => {
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
             {errors.email && (
-              <div className="text-red-600 text-sm">{errors.email}</div>
+              <div className="text-sm text-red-600">{errors.email}</div>
             )}
           </div>
-
-          {/* Ngày giao hàng */}
+          {/* // Ngày giao hàng */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium">Ngày giao hàng:</label>
+            <label className="text-sm font-medium">
+              Ngày giao hàng <span className="text-red-600">*</span>:
+            </label>
             <input
               type="date"
               name="selectedDate"
@@ -309,13 +317,14 @@ const Shipping = () => {
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
             {errors.selectedDate && (
-              <div className="text-red-600 text-sm">{errors.selectedDate}</div>
+              <div className="text-sm text-red-600">{errors.selectedDate}</div>
             )}
           </div>
-
-          {/* Giờ giao hàng */}
+          {/* // Giờ giao hàng */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium">Giờ giao hàng:</label>
+            <label className="text-sm font-medium">
+              Giờ giao hàng <span className="text-red-600">*</span>:
+            </label>
             <input
               type="time"
               name="selectedTime"
@@ -324,13 +333,14 @@ const Shipping = () => {
               className="rounded-lg border-2 p-3 focus:border-[#ffd040] focus:outline-none"
             />
             {errors.selectedTime && (
-              <div className="text-red-600 text-sm">{errors.selectedTime}</div>
+              <div className="text-sm text-red-600">{errors.selectedTime}</div>
             )}
           </div>
-
-          {/* Phương thức thanh toán */}
+          {/* // Phương thức thanh toán */}
           <div className="flex flex-col">
-            <label className="text-sm font-medium">Phương thức thanh toán:</label>
+            <label className="text-sm font-medium">
+              Phương thức thanh toán <span className="text-red-600">*</span>:
+            </label>
             <select
               name="paymentMethod"
               value={shippingInfo.paymentMethod}
@@ -341,10 +351,9 @@ const Shipping = () => {
               <option value="CreditCard">Thẻ tín dụng</option>
             </select>
             {errors.paymentMethod && (
-              <div className="text-red-600 text-sm">{errors.paymentMethod}</div>
+              <div className="text-sm text-red-600">{errors.paymentMethod}</div>
             )}
           </div>
-
           {/* Ghi chú */}
           <div className="flex flex-col">
             <label className="text-sm font-medium">Ghi chú:</label>
